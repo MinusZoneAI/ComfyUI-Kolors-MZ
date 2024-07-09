@@ -8,3 +8,9 @@ ComfyUI上Kolors的实现
 
 工作流在examples/workflow.png中获取
 
+
+
+Implementation of Kolors on ComfyUI
+Reference from https://github.com/kijai/ComfyUI-KwaiKolorsWrapper
+Using ComfyUI Native Sampling
+The workflow is obtained in examples/workflow.png
