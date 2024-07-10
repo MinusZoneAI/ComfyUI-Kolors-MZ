@@ -87,9 +87,9 @@ def MZ_ChatGLM3Loader_call(args):
 
     
     importlib.reload(chatglm3)
-    importlib.reload(chatglm3.configuration_chatglm)
-    importlib.reload(chatglm3.modeling_chatglm)
-    importlib.reload(chatglm3.tokenization_chatglm)
+    # importlib.reload(chatglm3.configuration_chatglm)
+    # importlib.reload(chatglm3.modeling_chatglm)
+    # importlib.reload(chatglm3.tokenization_chatglm)
     
 
     from .mz_kolors_utils import Utils
