@@ -77,6 +77,9 @@ def MZ_ChatGLM3Loader_call(args):
     chatglm3_checkpoint_path = os.path.join(llm_dir, chatglm3_checkpoint)
 
     from . import chatglm3
+    from .chatglm3 import configuration_chatglm
+    from .chatglm3 import modeling_chatglm
+    from .chatglm3 import tokenization_chatglm
     from .chatglm3.configuration_chatglm import ChatGLMConfig
     from .chatglm3.modeling_chatglm import ChatGLMModel
     from .chatglm3.tokenization_chatglm import ChatGLMTokenizer
@@ -84,9 +87,9 @@ def MZ_ChatGLM3Loader_call(args):
 
     
     importlib.reload(chatglm3)
-    importlib.reload(chatglm3.configuration_chatglm)
-    importlib.reload(chatglm3.modeling_chatglm)
-    importlib.reload(chatglm3.tokenization_chatglm)
+    importlib.reload(configuration_chatglm)
+    importlib.reload(modeling_chatglm)
+    importlib.reload(tokenization_chatglm)
     
 
     from .mz_kolors_utils import Utils
