@@ -68,7 +68,7 @@ def KolorsTextEncode(chatglm3_model, prompt):
     gc.collect()
     return prompt_embeds, text_proj
 
-
+import importlib 
 def MZ_ChatGLM3Loader_call(args):
     from .mz_kolors_utils import Utils
     llm_dir = os.path.join(Utils.get_models_path(), "LLM")
@@ -76,9 +76,22 @@ def MZ_ChatGLM3Loader_call(args):
 
     chatglm3_checkpoint_path = os.path.join(llm_dir, chatglm3_checkpoint)
 
-    from .chatglm3.configuration_chatglm import ChatGLMConfig
-    from .chatglm3.modeling_chatglm import ChatGLMModel
-    from .chatglm3.tokenization_chatglm import ChatGLMTokenizer
+    from . import chatglm3
+    # from .chatglm3.configuration_chatglm import ChatGLMConfig
+    # from .chatglm3.modeling_chatglm import ChatGLMModel
+    # from .chatglm3.tokenization_chatglm import ChatGLMTokenizer
+
+    ChatGLMConfig = chatglm3.configuration_chatglm.ChatGLMConfig
+    ChatGLMModel = chatglm3.modeling_chatglm.ChatGLMModel
+    ChatGLMTokenizer = chatglm3.tokenization_chatglm.ChatGLMTokenizer
+
+    
+    importlib.reload(chatglm3)
+    importlib.reload(chatglm3.configuration_chatglm)
+    importlib.reload(chatglm3.modeling_chatglm)
+    importlib.reload(chatglm3.tokenization_chatglm)
+    
+
     from .mz_kolors_utils import Utils
 
     offload_device = mm.unet_offload_device()
