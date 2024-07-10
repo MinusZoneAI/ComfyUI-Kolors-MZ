@@ -131,31 +131,33 @@ class QuantizedLinear(torch.nn.Module):
 
         shape = weight.shape
 
-        if weight is None or empty_init:
-            self.weight = torch.empty(
-                shape[0], shape[1] * weight_bit_width // 8, dtype=torch.int8, device=device)
-            self.weight_scale = torch.empty(
-                shape[0], dtype=dtype, device=device)
-        else:
-            self.weight_scale = weight.abs().max(dim=-1).values / \
-                ((2 ** (weight_bit_width - 1)) - 1)
-            self.weight = torch.round(
-                weight / self.weight_scale[:, None]).to(torch.int8)
-            if weight_bit_width == 4:
-                self.weight = compress_int4_weight(self.weight)
+        with torch.no_grad():
 
-        try:
-            self.weight = Parameter(
-                self.weight.to(device), requires_grad=False)
-            self.weight_scale = Parameter(
-                self.weight_scale.to(device), requires_grad=False)
-            self.bias = Parameter(
-                bias.to(device), requires_grad=False) if bias is not None else None
-        except Exception as e:
-            self.weight = Parameter(self.weight.to(device))
-            self.weight_scale = Parameter(self.weight_scale.to(device))
-            self.bias = Parameter(
-                bias.to(device)) if bias is not None else None
+            if weight is None or empty_init:
+                self.weight = torch.empty(
+                    shape[0], shape[1] * weight_bit_width // 8, dtype=torch.int8, device=device)
+                self.weight_scale = torch.empty(
+                    shape[0], dtype=dtype, device=device)
+            else:
+                self.weight_scale = weight.abs().max(dim=-1).values / \
+                    ((2 ** (weight_bit_width - 1)) - 1)
+                self.weight = torch.round(
+                    weight / self.weight_scale[:, None]).to(torch.int8)
+                if weight_bit_width == 4:
+                    self.weight = compress_int4_weight(self.weight)
+
+            try:
+                self.weight = Parameter(
+                    self.weight.to(device), requires_grad=False)
+                self.weight_scale = Parameter(
+                    self.weight_scale.to(device), requires_grad=False)
+                self.bias = Parameter(
+                    bias.to(device), requires_grad=False) if bias is not None else None
+            except Exception as e:
+                self.weight = Parameter(self.weight.to(device))
+                self.weight_scale = Parameter(self.weight_scale.to(device))
+                self.bias = Parameter(
+                    bias.to(device)) if bias is not None else None
 
     def forward(self, input):
         output = W8A16Linear.apply(
