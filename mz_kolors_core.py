@@ -79,6 +79,10 @@ def MZ_ChatGLM3Loader_call(args):
 
     chatglm3_checkpoint_path = os.path.join(llm_dir, chatglm3_checkpoint)
 
+    if not os.path.exists(chatglm3_checkpoint_path):
+        raise RuntimeError(
+            f"ERROR: Could not find chatglm3 checkpoint: {chatglm3_checkpoint_path}")
+
     from .chatglm3.configuration_chatglm import ChatGLMConfig
     from .chatglm3.modeling_chatglm import ChatGLMModel
     from .chatglm3.tokenization_chatglm import ChatGLMTokenizer
