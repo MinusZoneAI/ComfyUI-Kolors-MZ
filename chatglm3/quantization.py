@@ -148,11 +148,11 @@ class QuantizedLinear(torch.nn.Module):
 
             try:
                 self.weight = Parameter(
-                    self.weight.to(device))
+                    self.weight.to(device), requires_grad=False)
                 self.weight_scale = Parameter(
-                    self.weight_scale.to(device))
+                    self.weight_scale.to(device), requires_grad=False)
                 self.bias = Parameter(
-                    bias.to(device)) if bias is not None else None
+                    bias.to(device), requires_grad=False) if bias is not None else None
             except Exception as e:
                 self.weight = Parameter(self.weight.to(device))
                 self.weight_scale = Parameter(self.weight_scale.to(device))
