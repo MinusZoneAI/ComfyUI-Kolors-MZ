@@ -32,7 +32,6 @@ class ChatGLMConfig(PretrainedConfig):
         prefix_projection=False,
         **kwargs
     ):
-        # raise EnvironmentError("ChatGLMConfig is not available.")
         self.num_layers = num_layers
         self.vocab_size = padded_vocab_size
         self.padded_vocab_size = padded_vocab_size

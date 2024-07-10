@@ -80,8 +80,7 @@ def compress_int4_weight(weight: torch.Tensor):  # (n, m)
             blockDim,
             0,
             stream,
-            [ctypes.c_void_p(weight.data_ptr()), ctypes.c_void_p(
-                out.data_ptr()), ctypes.c_int32(n), ctypes.c_int32(m)],
+            [ctypes.c_void_p(weight.data_ptr()), ctypes.c_void_p(out.data_ptr()), ctypes.c_int32(n), ctypes.c_int32(m)],
         )
         return out
 
@@ -100,8 +99,7 @@ def extract_weight_to_half(weight: torch.Tensor, scale_list: torch.Tensor, sourc
 
     with torch.cuda.device(weight.device):
         n, m = weight.size(0), weight.size(1)
-        out = torch.empty(n, m * (8 // source_bit_width),
-                          dtype=scale_list.dtype, device="cuda")
+        out = torch.empty(n, m * (8 // source_bit_width), dtype=scale_list.dtype, device="cuda")
         stream = torch.cuda.current_stream()
 
         gridDim = (n, 1, 1)
@@ -131,37 +129,21 @@ class QuantizedLinear(torch.nn.Module):
 
         shape = weight.shape
 
-        with torch.no_grad():
+        if weight is None or empty_init:
+            self.weight = torch.empty(shape[0], shape[1] * weight_bit_width // 8, dtype=torch.int8, device=device)
+            self.weight_scale = torch.empty(shape[0], dtype=dtype, device=device)
+        else:
+            self.weight_scale = weight.abs().max(dim=-1).values / ((2 ** (weight_bit_width - 1)) - 1)
+            self.weight = torch.round(weight / self.weight_scale[:, None]).to(torch.int8)
+            if weight_bit_width == 4:
+                self.weight = compress_int4_weight(self.weight)
 
-            if weight is None or empty_init:
-                self.weight = torch.empty(
-                    shape[0], shape[1] * weight_bit_width // 8, dtype=torch.int8, device=device)
-                self.weight_scale = torch.empty(
-                    shape[0], dtype=dtype, device=device)
-            else:
-                self.weight_scale = weight.abs().max(dim=-1).values / \
-                    ((2 ** (weight_bit_width - 1)) - 1)
-                self.weight = torch.round(
-                    weight / self.weight_scale[:, None]).to(torch.int8)
-                if weight_bit_width == 4:
-                    self.weight = compress_int4_weight(self.weight)
-
-            try:
-                self.weight = Parameter(
-                    self.weight.to(device), requires_grad=False)
-                self.weight_scale = Parameter(
-                    self.weight_scale.to(device), requires_grad=False)
-                self.bias = Parameter(
-                    bias.to(device), requires_grad=False) if bias is not None else None
-            except Exception as e:
-                self.weight = Parameter(self.weight.to(device))
-                self.weight_scale = Parameter(self.weight_scale.to(device))
-                self.bias = Parameter(
-                    bias.to(device)) if bias is not None else None
+        self.weight = Parameter(self.weight.to(device), requires_grad=False)
+        self.weight_scale = Parameter(self.weight_scale.to(device), requires_grad=False)
+        self.bias = Parameter(bias.to(device), requires_grad=False) if bias is not None else None
 
     def forward(self, input):
-        output = W8A16Linear.apply(
-            input, self.weight, self.weight_scale, self.weight_bit_width)
+        output = W8A16Linear.apply(input, self.weight, self.weight_scale, self.weight_bit_width)
         if self.bias is not None:
             output = output + self.bias
         return output
@@ -172,8 +154,7 @@ def quantize(model, weight_bit_width, empty_init=False, device=None):
     for layer in model.layers:
         layer.self_attention.query_key_value = QuantizedLinear(
             weight_bit_width=weight_bit_width,
-            weight=layer.self_attention.query_key_value.weight.to(
-                torch.cuda.current_device()),
+            weight=layer.self_attention.query_key_value.weight.to(torch.cuda.current_device()),
             bias=layer.self_attention.query_key_value.bias,
             dtype=layer.self_attention.query_key_value.weight.dtype,
             device=layer.self_attention.query_key_value.weight.device if device is None else device,
@@ -181,8 +162,7 @@ def quantize(model, weight_bit_width, empty_init=False, device=None):
         )
         layer.self_attention.dense = QuantizedLinear(
             weight_bit_width=weight_bit_width,
-            weight=layer.self_attention.dense.weight.to(
-                torch.cuda.current_device()),
+            weight=layer.self_attention.dense.weight.to(torch.cuda.current_device()),
             bias=layer.self_attention.dense.bias,
             dtype=layer.self_attention.dense.weight.dtype,
             device=layer.self_attention.dense.weight.device if device is None else device,
@@ -190,8 +170,7 @@ def quantize(model, weight_bit_width, empty_init=False, device=None):
         )
         layer.mlp.dense_h_to_4h = QuantizedLinear(
             weight_bit_width=weight_bit_width,
-            weight=layer.mlp.dense_h_to_4h.weight.to(
-                torch.cuda.current_device()),
+            weight=layer.mlp.dense_h_to_4h.weight.to(torch.cuda.current_device()),
             bias=layer.mlp.dense_h_to_4h.bias,
             dtype=layer.mlp.dense_h_to_4h.weight.dtype,
             device=layer.mlp.dense_h_to_4h.weight.device if device is None else device,
@@ -199,8 +178,7 @@ def quantize(model, weight_bit_width, empty_init=False, device=None):
         )
         layer.mlp.dense_4h_to_h = QuantizedLinear(
             weight_bit_width=weight_bit_width,
-            weight=layer.mlp.dense_4h_to_h.weight.to(
-                torch.cuda.current_device()),
+            weight=layer.mlp.dense_4h_to_h.weight.to(torch.cuda.current_device()),
             bias=layer.mlp.dense_4h_to_h.bias,
             dtype=layer.mlp.dense_4h_to_h.weight.dtype,
             device=layer.mlp.dense_4h_to_h.weight.device if device is None else device,
