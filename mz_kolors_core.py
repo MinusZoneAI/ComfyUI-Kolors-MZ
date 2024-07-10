@@ -5,6 +5,8 @@ import json
 import os
 import random
 import re
+
+import torch
 import folder_paths
 import comfy.model_management as mm
 
@@ -98,11 +100,14 @@ def MZ_ChatGLM3Loader_call(args):
         pass
 
     with (init_empty_weights() if is_accelerate_available else nullcontext()):
-        text_encoder = ChatGLMModel(text_encoder_config).eval()
-        if '4bit' in chatglm3_checkpoint:
-            text_encoder.quantize(4)
-        elif '8bit' in chatglm3_checkpoint:
-            text_encoder.quantize(8)
+        with torch.no_grad():
+            # 打印版本号
+            print("torch version:", torch.__version__)
+            text_encoder = ChatGLMModel(text_encoder_config).eval()
+            if '4bit' in chatglm3_checkpoint:
+                text_encoder.quantize(4)
+            elif '8bit' in chatglm3_checkpoint:
+                text_encoder.quantize(8)
     text_encoder_sd = load_torch_file(chatglm3_checkpoint_path)
     if is_accelerate_available:
         for key in text_encoder_sd:
