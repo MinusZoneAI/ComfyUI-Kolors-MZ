@@ -42,9 +42,11 @@ https://huggingface.co/Kijai/ChatGLM3-safetensors/tree/main
 
 ## FAQ
 Error occurred when executing MZ_ChatGLM3Loader: 'ChatGLMModel' object has no attribute 'transformer'
+
 检查ChatGLM3Loader节点选择的模型是否已经正确下载
 
 RuntimeError: Only Tensors of floating point dtype can require gradients
+
 尝试使用fp16版本的模型: https://huggingface.co/Kijai/ChatGLM3-safetensors/blob/main/chatglm3-fp16.safetensors
 
 ## Star History
