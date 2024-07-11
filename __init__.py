@@ -75,7 +75,6 @@ class MZ_ChatGLM3TextEncode:
             "required": {
                 "chatglm3_model": ("CHATGLM3MODEL", ),
                 "text": ("STRING", {"multiline": True, "dynamicPrompts": True}),
-                "hid_proj": ("TorchLinear", ),
             }
         }
 
@@ -100,11 +99,12 @@ class MZ_KolorsUNETLoader():
     def INPUT_TYPES(s):
         return {"required": {
                 "unet_name": (folder_paths.get_filename_list("unet"), ),
+                # "seed": ("INT", {"default": 0}),
                 }}
 
-    RETURN_TYPES = ("MODEL", "TorchLinear")
+    RETURN_TYPES = ("MODEL",)
 
-    RETURN_NAMES = ("model", "hid_proj")
+    RETURN_NAMES = ("model",)
 
     FUNCTION = "load_unet"
 
