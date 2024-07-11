@@ -141,7 +141,11 @@ def MZ_ChatGLM3TextEncode_call(args):
     from torch import nn
     hid_proj: nn.Linear = args.get("hid_proj")
 
-    prompt_embeds = hid_proj(prompt_embeds)
+    if hid_proj.weight.dtype != prompt_embeds.dtype:
+        with torch.cuda.amp.autocast(dtype=hid_proj.weight.dtype):
+            prompt_embeds = hid_proj(prompt_embeds)
+    else:
+        prompt_embeds = hid_proj(prompt_embeds)
 
     return ([[
         prompt_embeds,
@@ -272,8 +276,6 @@ def MZ_FakeCond_call(kwargs):
         cond,
         {"pooled_output": pool},
     ]],)
-
-
 
 
 def load_unet_state_dict(sd):  # load unet in diffusers or regular format
