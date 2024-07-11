@@ -69,9 +69,6 @@ def KolorsTextEncode(chatglm3_model, prompt):
     return prompt_embeds, text_proj
 
 
-import importlib
-
-
 def MZ_ChatGLM3Loader_call(args):
     from .mz_kolors_utils import Utils
     llm_dir = os.path.join(Utils.get_models_path(), "LLM")
@@ -183,7 +180,7 @@ samplers.CFGGuider.set_conds = patched_set_conds
 
 
 def MZ_KolorsUNETLoader_call(kwargs):
-    samplers.CFGGuider.set_conds = patched_set_conds
+    # samplers.CFGGuider.set_conds = patched_set_conds
 
     from torch import nn
     from . import hook_comfyui
