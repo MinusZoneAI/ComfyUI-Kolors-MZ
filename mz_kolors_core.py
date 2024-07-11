@@ -69,9 +69,6 @@ def KolorsTextEncode(chatglm3_model, prompt):
     return prompt_embeds, text_proj
 
 
-import importlib
-
-
 def MZ_ChatGLM3Loader_call(args):
     from .mz_kolors_utils import Utils
     llm_dir = os.path.join(Utils.get_models_path(), "LLM")
@@ -152,6 +149,133 @@ def MZ_ChatGLM3TextEncode_call(args):
     ]], )
 
 
+def MZ_ChatGLM3TextEncodeV2_call(args):
+
+    text = args.get("text")
+    chatglm3_model = args.get("chatglm3_model")
+
+    prompt_embeds, pooled_output = KolorsTextEncode(
+        chatglm3_model,
+        text,
+    )
+
+    return ([[
+        prompt_embeds,
+        {"pooled_output": pooled_output},
+    ]], )
+
+
+import comfy
+
+import comfy.samplers as samplers
+if "original_CFGGuider_inner_set_conds" not in globals():
+    original_CFGGuider_inner_set_conds = samplers.CFGGuider.set_conds
+
+
+def patched_set_conds(self, positive, negative):
+    if "kolors_hid_proj" in self.model_options:
+        import copy
+        hid_proj = self.model_options["kolors_hid_proj"]
+        positive = copy.deepcopy(positive)
+        negative = copy.deepcopy(negative)
+
+        if hid_proj is not None:
+            positive[0][0] = hid_proj(positive[0][0])
+            negative[0][0] = hid_proj(negative[0][0])
+
+            # comfy.mz_log("positive", positive)
+            # comfy.mz_log("negative", negative)
+
+            if "control" in positive[0][1]:
+                if hasattr(positive[0][1]["control"], "control_model"):
+                    positive[0][1]["control"].control_model.label_emb = self.model_patcher.model.diffusion_model.label_emb
+
+            if "control" in negative[0][1]:
+                if hasattr(negative[0][1]["control"], "control_model"):
+                    negative[0][1]["control"].control_model.label_emb = self.model_patcher.model.diffusion_model.label_emb
+
+    return original_CFGGuider_inner_set_conds(self, positive, negative)
+
+
+samplers.CFGGuider.set_conds = patched_set_conds
+
+
+def MZ_KolorsUNETLoaderV2_call(kwargs):
+    # samplers.CFGGuider.set_conds = patched_set_conds
+
+    from torch import nn
+    from . import hook_comfyui
+    import comfy.sd
+
+    load_device = mm.get_torch_device()
+    with hook_comfyui.apply_kolors():
+        unet_name = kwargs.get("unet_name")
+        unet_path = folder_paths.get_full_path("unet", unet_name)
+        import comfy.utils
+        sd = comfy.utils.load_torch_file(unet_path)
+
+        encoder_hid_proj_weight = sd.pop("encoder_hid_proj.weight")
+        encoder_hid_proj_bias = sd.pop("encoder_hid_proj.bias")
+        hid_proj = nn.Linear(
+            encoder_hid_proj_weight.shape[1], encoder_hid_proj_weight.shape[0])
+        hid_proj.weight.data = encoder_hid_proj_weight
+        hid_proj.bias.data = encoder_hid_proj_bias
+        hid_proj = hid_proj.to(load_device)
+
+        model = comfy.sd.load_unet_state_dict(sd)
+        if model is None:
+            raise RuntimeError(
+                "ERROR: Could not detect model type of: {}".format(unet_path))
+
+        model.model_options["kolors_hid_proj"] = hid_proj
+        # comfy.mz_log("model1", model)
+
+        model_function_wrapper = model.model_options.get(
+            "model_function_wrapper", None)
+
+        # Callable[[UnetApplyFunction, UnetParams], torch.Tensor]
+        # model.apply_model, {"input": input_x, "timestep": timestep_, "c": c, "cond_or_uncond": cond_or_uncond}
+        # def kolors_unet_forward_wrapper(apply_model, unet_params):
+        #     input_x = unet_params["input"]
+        #     timestep_ = unet_params["timestep"]
+        #     c = unet_params["c"]
+        #     cond_or_uncond = unet_params["cond_or_uncond"]
+
+        #     comfy.mz_log("unet_params", unet_params)
+        #     comfy.mz_log("input_x", input_x)
+        #     comfy.mz_log("timestep_", timestep_)
+        #     comfy.mz_log("c", c)
+        #     comfy.mz_log("c_crossattn", c["c_crossattn"])
+        #     comfy.mz_log("cond_or_uncond", cond_or_uncond)
+
+        #     unet_params["c"]["c_crossattn"] = hid_proj(
+        #         unet_params["c"]["c_crossattn"])
+
+        #     if model_function_wrapper is not None:
+        #         return model_function_wrapper(apply_model, unet_params)
+        #     else:
+        #         return apply_model(input_x, timestep_, **unet_params["c"])
+
+        # model.set_model_unet_function_wrapper(kolors_unet_forward_wrapper)
+
+        return (model, )
+
+
+def MZ_FakeCond_call(kwargs):
+    import torch
+    # cond: torch.Size([1, 77, ])
+    cond = torch.zeros(2, 256, 4096)
+    # torch.Size([1, 1280])
+    pool = torch.zeros(2, 4096)
+
+    return ([[
+        cond,
+        {"pooled_output": pool},
+    ]],)
+
+
+
+
 def load_unet_state_dict(sd):  # load unet in diffusers or regular format
     from comfy import model_management, model_detection
     import comfy.utils
@@ -222,16 +346,3 @@ def MZ_KolorsUNETLoader_call(kwargs):
             raise RuntimeError(
                 "ERROR: Could not detect model type of: {}".format(unet_path))
         return (model, hid_proj)
-
-
-def MZ_FakeCond_call(kwargs):
-    import torch
-    # cond: torch.Size([1, 77, ])
-    cond = torch.zeros(2, 256, 4096)
-    # torch.Size([1, 1280])
-    pool = torch.zeros(2, 4096)
-
-    return ([[
-        cond,
-        {"pooled_output": pool},
-    ]],)
