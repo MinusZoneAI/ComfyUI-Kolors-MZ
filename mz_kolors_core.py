@@ -138,6 +138,27 @@ def MZ_ChatGLM3TextEncode_call(args):
         text,
     )
 
+    from torch import nn
+    hid_proj: nn.Linear = args.get("hid_proj")
+
+    prompt_embeds = hid_proj(prompt_embeds)
+
+    return ([[
+        prompt_embeds,
+        {"pooled_output": pooled_output},
+    ]], )
+
+
+def MZ_ChatGLM3TextEncodeV2_call(args):
+
+    text = args.get("text")
+    chatglm3_model = args.get("chatglm3_model")
+
+    prompt_embeds, pooled_output = KolorsTextEncode(
+        chatglm3_model,
+        text,
+    )
+
     return ([[
         prompt_embeds,
         {"pooled_output": pooled_output},
@@ -179,7 +200,7 @@ def patched_set_conds(self, positive, negative):
 samplers.CFGGuider.set_conds = patched_set_conds
 
 
-def MZ_KolorsUNETLoader_call(kwargs):
+def MZ_KolorsUNETLoaderV2_call(kwargs):
     # samplers.CFGGuider.set_conds = patched_set_conds
 
     from torch import nn
@@ -251,3 +272,77 @@ def MZ_FakeCond_call(kwargs):
         cond,
         {"pooled_output": pool},
     ]],)
+
+
+
+
+def load_unet_state_dict(sd):  # load unet in diffusers or regular format
+    from comfy import model_management, model_detection
+    import comfy.utils
+
+    # Allow loading unets from checkpoint files
+    checkpoint = False
+    diffusion_model_prefix = model_detection.unet_prefix_from_state_dict(sd)
+    temp_sd = comfy.utils.state_dict_prefix_replace(
+        sd, {diffusion_model_prefix: ""}, filter_keys=True)
+    if len(temp_sd) > 0:
+        sd = temp_sd
+        checkpoint = True
+
+    parameters = comfy.utils.calculate_parameters(sd)
+    unet_dtype = model_management.unet_dtype(model_params=parameters)
+    load_device = model_management.get_torch_device()
+
+    from torch import nn
+    hid_proj: nn.Linear = None
+    if True:
+        model_config = model_detection.model_config_from_diffusers_unet(sd)
+        if model_config is None:
+            return None
+
+        diffusers_keys = comfy.utils.unet_to_diffusers(
+            model_config.unet_config)
+
+        new_sd = {}
+        for k in diffusers_keys:
+            if k in sd:
+                new_sd[diffusers_keys[k]] = sd.pop(k)
+            else:
+                print("{} {}".format(diffusers_keys[k], k))
+
+        encoder_hid_proj_weight = sd.pop("encoder_hid_proj.weight")
+        encoder_hid_proj_bias = sd.pop("encoder_hid_proj.bias")
+        hid_proj = nn.Linear(
+            encoder_hid_proj_weight.shape[1], encoder_hid_proj_weight.shape[0])
+        hid_proj.weight.data = encoder_hid_proj_weight
+        hid_proj.bias.data = encoder_hid_proj_bias
+        hid_proj = hid_proj.to(load_device)
+
+    offload_device = model_management.unet_offload_device()
+    unet_dtype = model_management.unet_dtype(
+        model_params=parameters, supported_dtypes=model_config.supported_inference_dtypes)
+    manual_cast_dtype = model_management.unet_manual_cast(
+        unet_dtype, load_device, model_config.supported_inference_dtypes)
+    model_config.set_inference_dtype(unet_dtype, manual_cast_dtype)
+    model = model_config.get_model(new_sd, "")
+    model = model.to(offload_device)
+    model.load_model_weights(new_sd, "")
+    left_over = sd.keys()
+    if len(left_over) > 0:
+        print("left over keys in unet: {}".format(left_over))
+    return comfy.model_patcher.ModelPatcher(model, load_device=load_device, offload_device=offload_device), hid_proj
+
+
+def MZ_KolorsUNETLoader_call(kwargs):
+
+    from . import hook_comfyui
+    with hook_comfyui.apply_kolors():
+        unet_name = kwargs.get("unet_name")
+        unet_path = folder_paths.get_full_path("unet", unet_name)
+        import comfy.utils
+        sd = comfy.utils.load_torch_file(unet_path)
+        model, hid_proj = load_unet_state_dict(sd)
+        if model is None:
+            raise RuntimeError(
+                "ERROR: Could not detect model type of: {}".format(unet_path))
+        return (model, hid_proj)

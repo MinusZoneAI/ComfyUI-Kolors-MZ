@@ -68,7 +68,7 @@ NODE_CLASS_MAPPINGS["MZ_ChatGLM3Loader"] = MZ_ChatGLM3Loader
 NODE_DISPLAY_NAME_MAPPINGS["MZ_ChatGLM3Loader"] = f"{AUTHOR_NAME} - ChatGLM3Loader"
 
 
-class MZ_ChatGLM3TextEncode:
+class MZ_ChatGLM3TextEncodeV2:
     @classmethod
     def INPUT_TYPES(s):
         return {
@@ -86,6 +86,59 @@ class MZ_ChatGLM3TextEncode:
     def encode(self, **kwargs):
         from . import mz_kolors_core
         importlib.reload(mz_kolors_core)
+        return mz_kolors_core.MZ_ChatGLM3TextEncodeV2_call(kwargs)
+
+
+NODE_CLASS_MAPPINGS["MZ_ChatGLM3_V2"] = MZ_ChatGLM3TextEncodeV2
+NODE_DISPLAY_NAME_MAPPINGS[
+    "MZ_ChatGLM3_V2"] = f"{AUTHOR_NAME} - ChatGLM3TextEncodeV2"
+
+
+class MZ_KolorsUNETLoaderV2():
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": {
+                "unet_name": (folder_paths.get_filename_list("unet"), ),
+                }}
+
+    RETURN_TYPES = ("MODEL",)
+
+    RETURN_NAMES = ("model",)
+
+    FUNCTION = "load_unet"
+
+    CATEGORY = CATEGORY_NAME
+
+    def load_unet(self, **kwargs):
+        from . import mz_kolors_core
+        importlib.reload(mz_kolors_core)
+        return mz_kolors_core.MZ_KolorsUNETLoaderV2_call(kwargs)
+
+
+NODE_CLASS_MAPPINGS["MZ_KolorsUNETLoaderV2"] = MZ_KolorsUNETLoaderV2
+NODE_DISPLAY_NAME_MAPPINGS[
+    "MZ_KolorsUNETLoaderV2"] = f"{AUTHOR_NAME} - KolorsUNETLoaderV2"
+
+
+class MZ_ChatGLM3TextEncode:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "chatglm3_model": ("CHATGLM3MODEL", ),
+                "text": ("STRING", {"multiline": True, "dynamicPrompts": True}),
+                "hid_proj": ("TorchLinear", ),
+            }
+        }
+
+    RETURN_TYPES = ("CONDITIONING",)
+
+    FUNCTION = "encode"
+    CATEGORY = CATEGORY_NAME + "/Legacy"
+
+    def encode(self, **kwargs):
+        from . import mz_kolors_core
+        importlib.reload(mz_kolors_core)
         return mz_kolors_core.MZ_ChatGLM3TextEncode_call(kwargs)
 
 
@@ -99,16 +152,15 @@ class MZ_KolorsUNETLoader():
     def INPUT_TYPES(s):
         return {"required": {
                 "unet_name": (folder_paths.get_filename_list("unet"), ),
-                # "seed": ("INT", {"default": 0}),
                 }}
 
-    RETURN_TYPES = ("MODEL",)
+    RETURN_TYPES = ("MODEL", "TorchLinear")
 
-    RETURN_NAMES = ("model",)
+    RETURN_NAMES = ("model", "hid_proj")
 
     FUNCTION = "load_unet"
 
-    CATEGORY = CATEGORY_NAME
+    CATEGORY = CATEGORY_NAME + "/Legacy"
 
     def load_unet(self, **kwargs):
         from . import mz_kolors_core
