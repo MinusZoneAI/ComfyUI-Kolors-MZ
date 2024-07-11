@@ -212,11 +212,19 @@ def load_unet_state_dict(sd):  # load unet in diffusers or regular format
 def MZ_KolorsUNETLoader_call(kwargs):
 
     from . import hook_comfyui
-    with hook_comfyui.apply_kolors():
+    # with hook_comfyui.apply_kolors():
+    if True:
         unet_name = kwargs.get("unet_name")
         unet_path = folder_paths.get_full_path("unet", unet_name)
         import comfy.utils
         sd = comfy.utils.load_torch_file(unet_path)
+        comfy.mz_log("add_embedding.linear_1.weight", sd["add_embedding.linear_1.weight"])
+        # add_embedding_linear_1_weight : torch.Size([1280, 5632])
+        add_embedding_linear_1_weight = sd["add_embedding.linear_1.weight"]
+        # new_add_embedding_linear_1_weight : torch.Size([1280, 2816])
+        new_add_embedding_linear_1_weight = add_embedding_linear_1_weight[:, :2816]
+        sd["add_embedding.linear_1.weight"] = new_add_embedding_linear_1_weight
+         
         model, hid_proj = load_unet_state_dict(sd)
         if model is None:
             raise RuntimeError(

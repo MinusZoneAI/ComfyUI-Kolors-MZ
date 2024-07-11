@@ -162,3 +162,4 @@ cython_debug/
 #.idea/
 exclude.txt
 copytoww.bat
+train_tools

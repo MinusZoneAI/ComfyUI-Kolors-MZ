@@ -36,9 +36,9 @@ class MZ_FakeCond:
         return mz_kolors_core.MZ_FakeCond_call(kwargs)
 
 
-# NODE_CLASS_MAPPINGS["MZ_FakeCond"] = MZ_FakeCond
-# NODE_DISPLAY_NAME_MAPPINGS[
-#     "MZ_FakeCond"] = f"{AUTHOR_NAME} - FakeCond"
+NODE_CLASS_MAPPINGS["MZ_FakeCond"] = MZ_FakeCond
+NODE_DISPLAY_NAME_MAPPINGS[
+    "MZ_FakeCond"] = f"{AUTHOR_NAME} - FakeCond"
 
 
 class MZ_ChatGLM3Loader:
