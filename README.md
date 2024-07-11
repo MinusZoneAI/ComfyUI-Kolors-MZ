@@ -1,4 +1,4 @@
-![image](https://github.com/MinusZoneAI/ComfyUI-Kolors-MZ/blob/main/examples/workflow.png)
+![image](./examples/workflow.png)
 
 ComfyUI上Kolors的实现
 
