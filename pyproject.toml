@@ -9,6 +9,6 @@ Repository = "https://github.com/MinusZoneAI/ComfyUI-Kolors-MZ"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "wailovet"
 DisplayName = "ComfyUI-Kolors-MZ"
 Icon = ""
