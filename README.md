@@ -41,15 +41,17 @@ https://huggingface.co/Kijai/ChatGLM3-safetensors/tree/main
 
 
 ## FAQ
-Error occurred when executing MZ_ChatGLM3Loader: 'ChatGLMModel' object has no attribute 'transformer'
-+ 检查ChatGLM3Loader节点选择的模型是否已经正确下载
+name 'round_up' is not defined
++ 参考:https://github.com/THUDM/ChatGLM2-6B/issues/272#issuecomment-1632164243 , 使用 pip install cpm_kernels 或者 pip install -U cpm_kernels 更新 cpm_kernels
+
+module 'comfy.model_detection' has no attribute 'unet_prefix_from_state_dict'
++ 更新ComfyUI本体到最新版本
 
 RuntimeError: Only Tensors of floating point dtype can require gradients
 + 尝试使用fp16版本的模型: https://huggingface.co/Kijai/ChatGLM3-safetensors/blob/main/chatglm3-fp16.safetensors
 
-module 'comfy.model_detection' has no attribute 'unet_prefix_from_state_dict'
-+ 更新ComfyUI到最新版本
-
+Error occurred when executing MZ_ChatGLM3Loader: 'ChatGLMModel' object has no attribute 'transformer'
++ 检查ChatGLM3Loader节点选择的模型是否已经正确下载
 
 
 ## Star History
