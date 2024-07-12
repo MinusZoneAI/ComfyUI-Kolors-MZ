@@ -14,7 +14,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 
 AUTHOR_NAME = "MinusZone"
 CATEGORY_NAME = f"{AUTHOR_NAME} - Kolors"
-
+folder_paths.add_model_folder_path("LLM", os.path.join(folder_paths.models_dir, "LLM"))
 
 class MZ_FakeCond:
     @classmethod
@@ -44,13 +44,13 @@ class MZ_FakeCond:
 class MZ_ChatGLM3Loader:
     @classmethod
     def INPUT_TYPES(s):
-        from .mz_kolors_utils import Utils
-        llm_dir = os.path.join(Utils.get_models_path(), "LLM")
+        # from .mz_kolors_utils import Utils
+        # llm_dir = os.path.join(Utils.get_models_path(), "LLM")
         # print("llm_dir:", llm_dir)
-        llm_models = Utils.listdir_models(llm_dir)
+        # llm_models = Utils.listdir_models(llm_dir)
 
         return {"required": {
-            "chatglm3_checkpoint": (llm_models,),
+            "chatglm3_checkpoint": (folder_paths.get_filename_list("LLM"),),
         }}
 
     RETURN_TYPES = ("CHATGLM3MODEL",)
