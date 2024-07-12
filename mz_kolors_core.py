@@ -70,11 +70,11 @@ def KolorsTextEncode(chatglm3_model, prompt):
 
 
 def MZ_ChatGLM3Loader_call(args):
-    from .mz_kolors_utils import Utils
-    llm_dir = os.path.join(Utils.get_models_path(), "LLM")
+    # from .mz_kolors_utils import Utils
+    # llm_dir = os.path.join(Utils.get_models_path(), "LLM")
     chatglm3_checkpoint = args.get("chatglm3_checkpoint")
 
-    chatglm3_checkpoint_path = os.path.join(llm_dir, chatglm3_checkpoint)
+    chatglm3_checkpoint_path = folder_paths.get_full_path('LLM', chatglm3_checkpoint)
 
     if not os.path.exists(chatglm3_checkpoint_path):
         raise RuntimeError(
