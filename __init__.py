@@ -14,31 +14,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 
 AUTHOR_NAME = "MinusZone"
 CATEGORY_NAME = f"{AUTHOR_NAME} - Kolors"
-folder_paths.add_model_folder_path("LLM", os.path.join(folder_paths.models_dir, "LLM"))
-
-class MZ_FakeCond:
-    @classmethod
-    def INPUT_TYPES(s):
-        return {
-            "required": {
-                "seed": ("INT", {"default": 0}),
-            }
-        }
-
-    RETURN_TYPES = ("CONDITIONING", )
-    RETURN_NAMES = ("prompt", )
-    FUNCTION = "encode"
-    CATEGORY = CATEGORY_NAME
-
-    def encode(self, **kwargs):
-        from . import mz_kolors_core
-        importlib.reload(mz_kolors_core)
-        return mz_kolors_core.MZ_FakeCond_call(kwargs)
-
-
-# NODE_CLASS_MAPPINGS["MZ_FakeCond"] = MZ_FakeCond
-# NODE_DISPLAY_NAME_MAPPINGS[
-#     "MZ_FakeCond"] = f"{AUTHOR_NAME} - FakeCond"
+folder_paths.add_model_folder_path(
+    "LLM", os.path.join(folder_paths.models_dir, "LLM"))
 
 
 class MZ_ChatGLM3Loader:
@@ -120,54 +97,32 @@ NODE_DISPLAY_NAME_MAPPINGS[
     "MZ_KolorsUNETLoaderV2"] = f"{AUTHOR_NAME} - KolorsUNETLoaderV2"
 
 
-class MZ_ChatGLM3TextEncode:
+class MZ_KolorsControlNetPatch:
     @classmethod
     def INPUT_TYPES(s):
         return {
             "required": {
-                "chatglm3_model": ("CHATGLM3MODEL", ),
-                "text": ("STRING", {"multiline": True, "dynamicPrompts": True}),
-                "hid_proj": ("TorchLinear", ),
+                "control_net": ("CONTROL_NET", ),
+                "model": ("MODEL", ),
             }
         }
 
-    RETURN_TYPES = ("CONDITIONING",)
+    RETURN_TYPES = ("CONTROL_NET",)
 
-    FUNCTION = "encode"
-    CATEGORY = CATEGORY_NAME + "/Legacy"
+    FUNCTION = "start"
+    CATEGORY = CATEGORY_NAME
 
-    def encode(self, **kwargs):
+    def start(self, **kwargs):
         from . import mz_kolors_core
         importlib.reload(mz_kolors_core)
-        return mz_kolors_core.MZ_ChatGLM3TextEncode_call(kwargs)
+        return mz_kolors_core.MZ_KolorsControlNetPatch_call(kwargs)
 
 
-NODE_CLASS_MAPPINGS["MZ_ChatGLM3"] = MZ_ChatGLM3TextEncode
+NODE_CLASS_MAPPINGS["MZ_KolorsControlNetPatch"] = MZ_KolorsControlNetPatch
 NODE_DISPLAY_NAME_MAPPINGS[
-    "MZ_ChatGLM3"] = f"{AUTHOR_NAME} - ChatGLM3TextEncode"
+    "MZ_KolorsControlNetPatch"] = f"{AUTHOR_NAME} - KolorsControlNetPatch"
 
 
-class MZ_KolorsUNETLoader():
-    @classmethod
-    def INPUT_TYPES(s):
-        return {"required": {
-                "unet_name": (folder_paths.get_filename_list("unet"), ),
-                }}
-
-    RETURN_TYPES = ("MODEL", "TorchLinear")
-
-    RETURN_NAMES = ("model", "hid_proj")
-
-    FUNCTION = "load_unet"
-
-    CATEGORY = CATEGORY_NAME + "/Legacy"
-
-    def load_unet(self, **kwargs):
-        from . import mz_kolors_core
-        importlib.reload(mz_kolors_core)
-        return mz_kolors_core.MZ_KolorsUNETLoader_call(kwargs)
-
-
-NODE_CLASS_MAPPINGS["MZ_KolorsUNETLoader"] = MZ_KolorsUNETLoader
-NODE_DISPLAY_NAME_MAPPINGS[
-    "MZ_KolorsUNETLoader"] = f"{AUTHOR_NAME} - Kolors UNET Loader"
+from . import mz_kolors_legacy
+NODE_CLASS_MAPPINGS.update(mz_kolors_legacy.NODE_CLASS_MAPPINGS)
+NODE_DISPLAY_NAME_MAPPINGS.update(mz_kolors_legacy.NODE_DISPLAY_NAME_MAPPINGS)
