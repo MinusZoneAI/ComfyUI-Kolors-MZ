@@ -11,10 +11,7 @@ class Kolors(comfy.supported_models.SDXL):
         "context_dim": 2048,
         "adm_in_channels": 5632,
         "use_temporal_attention": False,
-    } 
-
-if Kolors not in comfy.supported_models.models:
-    comfy.supported_models.models += [Kolors]
+    }
 
 
 def kolors_unet_config_from_diffusers_unet(state_dict, dtype=None):
@@ -74,8 +71,15 @@ def kolors_unet_config_from_diffusers_unet(state_dict, dtype=None):
 
 class apply_kolors:
     def __enter__(self):
+        import comfy.supported_models
+        self.old_supported_models = comfy.supported_models.models
+        comfy.supported_models.models = [Kolors]
+
         self.old_unet_config_from_diffusers_unet = model_detection.unet_config_from_diffusers_unet
         model_detection.unet_config_from_diffusers_unet = kolors_unet_config_from_diffusers_unet
 
     def __exit__(self, type, value, traceback):
         model_detection.unet_config_from_diffusers_unet = self.old_unet_config_from_diffusers_unet
+
+        import comfy.supported_models
+        comfy.supported_models.models = self.old_supported_models
