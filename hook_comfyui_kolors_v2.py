@@ -109,6 +109,7 @@ class KolorsSupported(comfy.supported_models.SDXL):
     def get_model(self, state_dict, prefix="", device=None):
         out = KolorsSDXL(self, model_type=self.model_type(
             state_dict, prefix), device=device,)
+        out.__class__ = model_base.SDXL
         if self.inpaint_model():
             out.set_inpaint()
         return out
