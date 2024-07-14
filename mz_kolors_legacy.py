@@ -217,6 +217,10 @@ class MZ_FakeCond:
         return MZ_FakeCond_call(kwargs)
 
 
-# NODE_CLASS_MAPPINGS["MZ_FakeCond"] = MZ_FakeCond
-# NODE_DISPLAY_NAME_MAPPINGS[
-#     "MZ_FakeCond"] = f"{AUTHOR_NAME} - FakeCond"
+try:
+    if os.environ.get("MZ_DEV", None) is not None:
+        NODE_CLASS_MAPPINGS["MZ_FakeCond"] = MZ_FakeCond
+        NODE_DISPLAY_NAME_MAPPINGS[
+            "MZ_FakeCond"] = f"{AUTHOR_NAME} - FakeCond"
+except ImportError:
+    pass
