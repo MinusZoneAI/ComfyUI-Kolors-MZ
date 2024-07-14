@@ -56,8 +56,7 @@ class KolorsUNetModel(UNetModel):
     def forward(self, *args, **kwargs):
 
         if "context" in kwargs:
-            with torch.cuda.amp.autocast(enabled=True):
-                kwargs["context"] = self.encoder_hid_proj(kwargs["context"])
+            kwargs["context"] = self.encoder_hid_proj(kwargs["context"]).to(dtype=self.dtype)
 
         # if "y" in kwargs:
         #     if kwargs["y"].shape[1] == 2816:
