@@ -179,7 +179,7 @@ def MZ_KolorsControlNetPatch_call(kwargs):
         def KolorsControlNet_forward(self, x, hint, timesteps, context, **kwargs):
             with torch.cuda.amp.autocast(enabled=True):
                 context = model.model.diffusion_model.encoder_hid_proj(context)
-            return super_forward(self, x, hint, timesteps, context, **kwargs)
+                return super_forward(self, x, hint, timesteps, context, **kwargs)
 
         def KolorsControlLora_pre_run(self, *args, **kwargs):
             result = super_pre_run(self, *args, **kwargs)

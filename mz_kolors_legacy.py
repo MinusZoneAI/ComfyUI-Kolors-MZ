@@ -114,6 +114,20 @@ def MZ_FakeCond_call(kwargs):
     cond = torch.zeros(2, 256, 4096)
     pool = torch.zeros(2, 4096)
 
+    dtype = kwargs.get("dtype")
+    if dtype == "fp16":
+        print("fp16")
+        cond = cond.half()
+        pool = pool.half()
+    elif dtype == "bf16":
+        print("bf16")
+        cond = cond.bfloat16()
+        pool = pool.bfloat16()
+    else:
+        print("fp32")
+        cond = cond.float()
+        pool = pool.float()
+
     return ([[
         cond,
         {"pooled_output": pool},
@@ -186,6 +200,11 @@ class MZ_FakeCond:
         return {
             "required": {
                 "seed": ("INT", {"default": 0}),
+                "dtype": ([
+                    "fp32",
+                    "fp16",
+                    "bf16",
+                ],),
             }
         }
 

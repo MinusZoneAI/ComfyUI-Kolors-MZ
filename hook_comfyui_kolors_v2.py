@@ -51,21 +51,31 @@ from comfy.ldm.modules.diffusionmodules.openaimodel import UNetModel
 class KolorsUNetModel(UNetModel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.encoder_hid_proj = nn.Linear(4096, 2048, bias=True).to(dtype=self.dtype)
+        self.encoder_hid_proj = nn.Linear(
+            4096, 2048, bias=True).to(dtype=self.dtype)
 
-    def forward(self, *args, **kwargs):
-
+    def _forward(self, *args, **kwargs):
         if "context" in kwargs:
-            kwargs["context"] = self.encoder_hid_proj(kwargs["context"]).to(dtype=self.dtype)
+            kwargs["context"] = self.encoder_hid_proj(
+                kwargs["context"])
 
-        # if "y" in kwargs:
-        #     if kwargs["y"].shape[1] == 2816:
-        #         # 扩展至5632
-        #         kwargs["y"] = torch.cat(
-        #             torch.zeros(kwargs["y"].shape[0], 2816).to(kwargs["y"].device), kwargs["y"], dim=1)
+            # if "y" in kwargs:
+            #     if kwargs["y"].shape[1] == 2816:
+            #         # 扩展至5632
+            #         kwargs["y"] = torch.cat(
+            #             torch.zeros(kwargs["y"].shape[0], 2816).to(kwargs["y"].device), kwargs["y"], dim=1)
 
         result = super().forward(*args, **kwargs)
         return result
+
+    def forward(self, *args, **kwargs):
+        if kwargs["context"].dtype != self.dtype:
+            with torch.cuda.amp.autocast(enabled=True):
+                print(
+                    f"KolorsUNetModel dtype autocast, unet dtype: {self.dtype}, context dtype: {kwargs['context'].dtype}")
+                return self._forward(*args, **kwargs)
+        else:
+            return self._forward(*args, **kwargs)
 
 
 class KolorsSDXL(model_base.SDXL):
