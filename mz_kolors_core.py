@@ -210,8 +210,9 @@ def MZ_KolorsControlNetPatch_call(kwargs):
         super_forward = ControlNet.forward
 
         def KolorsControlNet_forward(self, x, hint, timesteps, context, **kwargs):
-            context = model.model.diffusion_model.encoder_hid_proj(context)
-            return super_forward(self, x, hint, timesteps, context, **kwargs)
+            with torch.cuda.amp.autocast(enabled=True):
+                context = model.model.diffusion_model.encoder_hid_proj(context)
+                return super_forward(self, x, hint, timesteps, context, **kwargs)
 
         control_net.control_model.forward = MethodType(
             KolorsControlNet_forward, control_net.control_model)
