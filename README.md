@@ -1,5 +1,11 @@
 ![image](./examples/workflow.png)
 
+## Recent changes 
+* [2024-07-14] 删除自动兼容ControlNet, 新增MZ_KolorsControlNetPatch节点
+  ![image](https://github.com/user-attachments/assets/73ae6447-c69d-4781-9c66-94e0029709ed)
+
+
+
 ComfyUI上Kolors的实现
 
 参考自 https://github.com/kijai/ComfyUI-KwaiKolorsWrapper
