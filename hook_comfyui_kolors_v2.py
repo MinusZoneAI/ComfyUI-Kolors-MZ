@@ -1,3 +1,4 @@
+import warnings
 from comfy.model_detection import *
 import comfy.model_detection as model_detection
 import comfy.supported_models
@@ -9,6 +10,42 @@ from comfy.model_base import sdxl_pooled, CLIPEmbeddingNoiseAugmentation, Timest
 
 
 from comfy.ldm.modules.diffusionmodules.openaimodel import UNetModel
+
+
+# try:
+#     import comfy.samplers as samplers
+#     original_CFGGuider_inner_set_conds = samplers.CFGGuider.set_conds
+
+#     def patched_set_conds(self, positive, negative):
+#         if isinstance(self.model_patcher.model, KolorsSDXL):
+#             import copy
+#             if "control" in positive[0][1]:
+#                 if hasattr(positive[0][1]["control"], "control_model"):
+#                     if positive[0][1]["control"].control_model.label_emb.shape[1] == 5632:
+#                         return
+
+
+#             warnings.warn("该方法不再维护")
+#             positive = copy.deepcopy(positive)
+#             negative = copy.deepcopy(negative)
+#             hid_proj = self.model_patcher.model.encoder_hid_proj
+#             if hid_proj is not None:
+#                 positive[0][0] = hid_proj(positive[0][0])
+#                 negative[0][0] = hid_proj(negative[0][0])
+
+#                 if "control" in positive[0][1]:
+#                     if hasattr(positive[0][1]["control"], "control_model"):
+#                         positive[0][1]["control"].control_model.label_emb = self.model_patcher.model.diffusion_model.label_emb
+
+#                 if "control" in negative[0][1]:
+#                     if hasattr(negative[0][1]["control"], "control_model"):
+#                         negative[0][1]["control"].control_model.label_emb = self.model_patcher.model.diffusion_model.label_emb
+
+#         return original_CFGGuider_inner_set_conds(self, positive, negative)
+
+#     samplers.CFGGuider.set_conds = patched_set_conds
+# except ImportError:
+#     print("CFGGuider not found, skipping patching")
 
 
 class KolorsUNetModel(UNetModel):
@@ -24,7 +61,7 @@ class KolorsUNetModel(UNetModel):
             if kwargs["y"].shape[1] == 2816:
                 # 扩展至5632
                 kwargs["y"] = torch.cat(
-                    torch.zeros(kwargs["y"].shape[0], 2816).to(kwargs["y"].device), kwargs["y"], dim=1) 
+                    torch.zeros(kwargs["y"].shape[0], 2816).to(kwargs["y"].device), kwargs["y"], dim=1)
 
         result = super().forward(*args, **kwargs)
         return result
@@ -59,7 +96,7 @@ class KolorsSDXL(model_base.SDXL):
         return torch.cat((clip_pooled.to(flat.device), flat), dim=1)
 
 
-class Kolors(comfy.supported_models.SDXL):
+class KolorsSupported(comfy.supported_models.SDXL):
     unet_config = {
         "model_channels": 320,
         "use_linear_in_transformer": True,
@@ -75,20 +112,6 @@ class Kolors(comfy.supported_models.SDXL):
         if self.inpaint_model():
             out.set_inpaint()
         return out
-
-
-from comfy.controlnet import ControlNet
-
-
-class KolorsControlNet(ControlNet):
-    def get_control(self, *args, **kwargs):
-        raise NotImplementedError(
-            "Kolors control net patch not implemented yet")
-        return super().get_control(*args, **kwargs)
-
-
-if Kolors not in comfy.supported_models.models:
-    comfy.supported_models.models += [Kolors]
 
 
 def kolors_unet_config_from_diffusers_unet(state_dict, dtype=None):
@@ -166,9 +189,16 @@ class apply_kolors:
         self.original_unet_config_from_diffusers_unet = model_detection.unet_config_from_diffusers_unet
         model_detection.unet_config_from_diffusers_unet = kolors_unet_config_from_diffusers_unet
 
+        import comfy.supported_models
+        self.original_supported_models = comfy.supported_models.models
+        comfy.supported_models.models = [KolorsSupported]
+
     def __exit__(self, type, value, traceback):
         import comfy.ldm.modules.diffusionmodules.openaimodel
         import comfy.utils
         comfy.utils.UNET_MAP_BASIC = self.original_UNET_MAP_BASIC
 
         model_detection.unet_config_from_diffusers_unet = self.original_unet_config_from_diffusers_unet
+
+        import comfy.supported_models
+        comfy.supported_models.models = self.original_supported_models

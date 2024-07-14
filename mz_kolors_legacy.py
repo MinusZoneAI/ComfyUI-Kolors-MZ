@@ -96,8 +96,8 @@ def load_unet_state_dict(sd):  # load unet in diffusers or regular format
 
 def MZ_KolorsUNETLoader_call(kwargs):
 
-    from . import hook_comfyui
-    with hook_comfyui.apply_kolors():
+    from . import hook_comfyui_kolors_v1
+    with hook_comfyui_kolors_v1.apply_kolors():
         unet_name = kwargs.get("unet_name")
         unet_path = folder_paths.get_full_path("unet", unet_name)
         import comfy.utils

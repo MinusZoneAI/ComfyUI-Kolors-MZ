@@ -137,10 +137,10 @@ def MZ_ChatGLM3TextEncodeV2_call(args):
 
 def MZ_KolorsUNETLoaderV2_call(kwargs):
 
-    from . import hook_comfyui
+    from . import hook_comfyui_kolors_v2
     import comfy.sd
 
-    with hook_comfyui.apply_kolors():
+    with hook_comfyui_kolors_v2.apply_kolors():
         unet_name = kwargs.get("unet_name")
         unet_path = folder_paths.get_full_path("unet", unet_name)
         import comfy.utils
@@ -158,7 +158,7 @@ from comfy.controlnet import ControlLora
 
 
 def MZ_KolorsControlNetPatch_call(kwargs):
-    from . import hook_comfyui
+    from . import hook_comfyui_kolors_v2
     model = kwargs.get("model")
     control_net = kwargs.get("control_net")
     import comfy.controlnet
