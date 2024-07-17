@@ -91,7 +91,7 @@ Error occurred when executing MZ_ChatGLM3Loader: 'ChatGLMModel' object has no at
 
 
 ## Contact
-- 绿泡泡: minrszone
+- 微信Wechat: minrszone
 - Bilibili: [minus_zone](https://space.bilibili.com/5950992)
 - 小红书: [MinusZoneAI](https://www.xiaohongshu.com/user/profile/5f072e990000000001005472)
 
