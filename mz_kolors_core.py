@@ -223,3 +223,13 @@ def MZ_KolorsControlNetPatch_call(kwargs):
             f"Type {control_net} not supported for KolorsControlNetPatch")
 
     return (control_net,)
+
+
+def MZ_KolorsCLIPVisionLoader_call(kwargs):
+    import comfy.clip_vision
+    from . import hook_comfyui_kolors_v2
+    clip_name = kwargs.get("clip_name")
+    clip_path = folder_paths.get_full_path("clip_vision", clip_name)
+    with hook_comfyui_kolors_v2.apply_kolors():
+        clip_vision = comfy.clip_vision.load(clip_path)
+        return (clip_vision,)
