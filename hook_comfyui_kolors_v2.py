@@ -1,3 +1,5 @@
+import os
+from types import MethodType
 import warnings
 from comfy.model_detection import *
 import comfy.model_detection as model_detection
@@ -177,10 +179,50 @@ import comfy.ldm.modules.diffusionmodules.openaimodel
 from torch import nn
 
 
+def load_clipvision_336_from_sd(sd, prefix="", convert_keys=False):
+    from comfy.clip_vision import ClipVisionModel, convert_to_transformers
+
+    json_config = os.path.join(os.path.dirname(
+        os.path.realpath(__file__)), "clip_vit_336", "config.json")
+
+    clip = ClipVisionModel(json_config)
+
+    m, u = clip.load_sd(sd)
+    if len(m) > 0:
+        logging.warning("missing clip vision: {}".format(m))
+    u = set(u)
+    keys = list(sd.keys())
+    for k in keys:
+        if k not in u:
+            t = sd.pop(k)
+            del t
+
+    # def vis_forward(self, pixel_values, attention_mask=None, intermediate_output=None):
+    #     pixel_values = nn.functional.interpolate(
+    #         pixel_values, size=(336, 336), mode='bilinear', align_corners=False)
+    #     x = self.embeddings(pixel_values)
+    #     x = self.pre_layrnorm(x)
+    #     # TODO: attention_mask?
+    #     x, i = self.encoder(
+    #         x, mask=None, intermediate_output=intermediate_output)
+    #     pooled_output = self.post_layernorm(x[:, 0, :])
+    #     return x, i, pooled_output
+
+    # clip.model.vision_model.forward = MethodType(
+    #     vis_forward, clip.model.vision_model
+    # )
+
+    return clip
+
+
 class apply_kolors:
     def __enter__(self):
         import comfy.ldm.modules.diffusionmodules.openaimodel
         import comfy.utils
+        import comfy.clip_vision
+
+        self.original_load_clipvision_from_sd = comfy.clip_vision.load_clipvision_from_sd
+        comfy.clip_vision.load_clipvision_from_sd = load_clipvision_336_from_sd
 
         self.original_UNET_MAP_BASIC = comfy.utils.UNET_MAP_BASIC.copy()
         comfy.utils.UNET_MAP_BASIC.add(
@@ -206,3 +248,6 @@ class apply_kolors:
 
         import comfy.supported_models
         comfy.supported_models.models = self.original_supported_models
+
+        import comfy.clip_vision
+        comfy.clip_vision.load_clipvision_from_sd = self.original_load_clipvision_from_sd
