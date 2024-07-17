@@ -1,6 +1,7 @@
-![image](./examples/workflow.png)
+![image](./examples/workflow_ipa.png)
 
 ## Recent changes 
+* [2024-07-17] 新增支持IPAdapter_plus的加载器和高级应用节点MZ_IPAdapterModelLoaderKolors,MZ_IPAdapterAdvancedKolors
 * [2024-07-14] 删除自动兼容ControlNet, 新增MZ_KolorsControlNetPatch节点
   ![image](https://github.com/user-attachments/assets/73ae6447-c69d-4781-9c66-94e0029709ed)
 
