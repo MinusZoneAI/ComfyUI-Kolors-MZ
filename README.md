@@ -7,7 +7,7 @@
 
 
 
-ComfyUI上Kolors的实现
+## ComfyUI上Kolors的实现
 
 参考自 https://github.com/kijai/ComfyUI-KwaiKolorsWrapper
 
@@ -26,7 +26,14 @@ chatglm3放置在 models/LLM/ 文件夹下
 https://huggingface.co/Kijai/ChatGLM3-safetensors/blob/main/chatglm3-fp16.safetensors
 
 
-Implementation of Kolors on ComfyUI
+### 官方IP-Adapter-Plus模型下载地址
+
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/ip_adapter_plus_genernal.bin 下载至 models/ipadapter/
+
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/blob/main/image_encoder/pytorch_model.bin 下载至 models/clip_vision/
+ 
+
+## Implementation of Kolors on ComfyUI
 
 Reference from https://github.com/kijai/ComfyUI-KwaiKolorsWrapper
 
@@ -45,7 +52,11 @@ Download link:
 https://huggingface.co/Kijai/ChatGLM3-safetensors/tree/main
 
 
+### Official IP-Adapter-Plus model download link
 
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/ip_adapter_plus_genernal.bin Download to models/ipadapter/
+
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/blob/main/image_encoder/pytorch_model.bin Download to models/clip_vision/
 
 ## FAQ
 name 'round_up' is not defined
@@ -59,6 +70,13 @@ RuntimeError: Only Tensors of floating point dtype can require gradients
 
 Error occurred when executing MZ_ChatGLM3Loader: 'ChatGLMModel' object has no attribute 'transformer'
 + 检查ChatGLM3Loader节点选择的模型是否已经正确下载
+
+
+## Credits
+
+- [Kolors](https://github.com/Kwai-Kolors/Kolors)
+- [ComfyUI](https://github.com/comfyanonymous/ComfyUI) 
+- [ComfyUI_IPAdapter_plus](https://github.com/cubiq/ComfyUI_IPAdapter_plus)
 
 
 ## Star History
