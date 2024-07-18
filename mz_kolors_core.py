@@ -6,6 +6,7 @@ import os
 import random
 import re
 import subprocess
+import sys
 from types import MethodType
 
 import torch
@@ -79,8 +80,6 @@ def MZ_ChatGLM3Loader_call(args):
     from .chatglm3.modeling_chatglm import ChatGLMModel
     from .chatglm3.tokenization_chatglm import ChatGLMTokenizer
 
-    from .mz_kolors_utils import Utils
-
     offload_device = mm.unet_offload_device()
 
     text_encoder_config = os.path.join(
@@ -108,8 +107,9 @@ def MZ_ChatGLM3Loader_call(args):
                 try:
                     import cpm_kernels
                 except ImportError:
+                    print("Installing cpm_kernels...")
                     subprocess.run(
-                        ["pip", "install", "cpm-kernels"], check=True)
+                        [sys.executable, "-m", "pip", "install", "cpm_kernels"], check=True)
                     pass
                 text_encoder.quantize(4)
             elif '8bit' in chatglm3_checkpoint:
@@ -120,7 +120,7 @@ def MZ_ChatGLM3Loader_call(args):
             set_module_tensor_to_device(
                 text_encoder, key, device=offload_device, value=text_encoder_sd[key])
     else:
-        text_encoder.load_state_dict()
+        text_encoder.load_state_dict(text_encoder_sd)
 
     tokenizer_path = os.path.join(
         os.path.dirname(__file__), 'configs', "tokenizer")
