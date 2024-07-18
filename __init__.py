@@ -131,7 +131,7 @@ class MZ_KolorsCLIPVisionLoader:
     RETURN_TYPES = ("CLIP_VISION",)
     FUNCTION = "load_clip"
 
-    CATEGORY = CATEGORY_NAME
+    CATEGORY = CATEGORY_NAME + "/Legacy"
 
     def load_clip(self, **kwargs):
         from . import mz_kolors_core
@@ -140,20 +140,20 @@ class MZ_KolorsCLIPVisionLoader:
 
 
 NODE_CLASS_MAPPINGS["MZ_KolorsCLIPVisionLoader"] = MZ_KolorsCLIPVisionLoader
-NODE_DISPLAY_NAME_MAPPINGS["MZ_KolorsCLIPVisionLoader"] = f"{AUTHOR_NAME} - KolorsCLIPVisionLoader"
+NODE_DISPLAY_NAME_MAPPINGS["MZ_KolorsCLIPVisionLoader"] = f"{AUTHOR_NAME} - KolorsCLIPVisionLoader - Legacy"
 
 
 from .ComfyUI_IPAdapter_plus.IPAdapterPlus import IPAdapterAdvanced, IPAdapterModelLoader
 
-IPAdapterModelLoader.CATEGORY = CATEGORY_NAME + "/IPAdapter_plus"
+IPAdapterModelLoader.CATEGORY = CATEGORY_NAME + "/Legacy"
 NODE_CLASS_MAPPINGS["MZ_IPAdapterModelLoaderKolors"] = IPAdapterModelLoader
 NODE_DISPLAY_NAME_MAPPINGS[
-    "MZ_IPAdapterModelLoaderKolors"] = f"IPAdapterModelLoader(kolors)"
+    "MZ_IPAdapterModelLoaderKolors"] = f"IPAdapterModelLoader(kolors) - Legacy"
 
-IPAdapterAdvanced.CATEGORY = CATEGORY_NAME + "/IPAdapter_plus"
+IPAdapterAdvanced.CATEGORY = CATEGORY_NAME + "/Legacy"
 NODE_CLASS_MAPPINGS["MZ_IPAdapterAdvancedKolors"] = IPAdapterAdvanced
 NODE_DISPLAY_NAME_MAPPINGS[
-    "MZ_IPAdapterAdvancedKolors"] = f"IPAdapterAdvanced(kolors)"
+    "MZ_IPAdapterAdvancedKolors"] = f"IPAdapterAdvanced(kolors) - Legacy"
 
 from . import mz_kolors_legacy
 NODE_CLASS_MAPPINGS.update(mz_kolors_legacy.NODE_CLASS_MAPPINGS)
