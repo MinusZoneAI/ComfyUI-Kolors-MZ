@@ -5,6 +5,7 @@ import json
 import os
 import random
 import re
+import subprocess
 from types import MethodType
 
 import torch
@@ -104,6 +105,12 @@ def MZ_ChatGLM3Loader_call(args):
             print("torch version:", torch.__version__)
             text_encoder = ChatGLMModel(text_encoder_config).eval()
             if '4bit' in chatglm3_checkpoint:
+                try:
+                    import cpm_kernels
+                except ImportError:
+                    subprocess.run(
+                        ["pip", "install", "cpm-kernels"], check=True)
+                    pass
                 text_encoder.quantize(4)
             elif '8bit' in chatglm3_checkpoint:
                 text_encoder.quantize(8)
