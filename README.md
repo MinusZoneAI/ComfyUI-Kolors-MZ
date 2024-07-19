@@ -15,22 +15,29 @@
 使用ComfyUI原生采样
 
 工作流在examples/workflow.png中获取
-
-
+ 
+### UNET模型下载
 unet模型放置在 models/unet/ 文件夹下
-下载地址:
-https://huggingface.co/Kwai-Kolors/Kolors/blob/main/unet/diffusion_pytorch_model.fp16.safetensors
 
+模型主页: https://huggingface.co/Kwai-Kolors/Kolors
 
+下载地址: https://huggingface.co/Kwai-Kolors/Kolors/resolve/main/unet/diffusion_pytorch_model.fp16.safetensors
+ 
+
+### ChatGLM3模型下载
 chatglm3放置在 models/LLM/ 文件夹下
-下载地址:
-https://huggingface.co/Kijai/ChatGLM3-safetensors/blob/main/chatglm3-fp16.safetensors
+
+模型主页: https://huggingface.co/Kijai/ChatGLM3-safetensors
+
+下载地址: https://huggingface.co/Kijai/ChatGLM3-safetensors/resolve/main/chatglm3-fp16.safetensors
 
 
 ### 官方IP-Adapter-Plus模型下载地址
-https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/blob/main/ip_adapter_plus_general.bin 下载至 models/ipadapter/
+模型主页: https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus
 
-https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/blob/main/image_encoder/pytorch_model.bin 下载至 models/clip_vision/
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/ip_adapter_plus_general.bin 下载至 models/ipadapter/
+
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_encoder/pytorch_model.bin 下载至 models/clip_vision/
  
 
 ## Implementation of Kolors on ComfyUI
@@ -42,28 +49,42 @@ Using ComfyUI Native Sampling
 The workflow is obtained in examples/workflow.png
 
 
+### UNET model download
 The unet model is placed in the models/unet/ folder
+
+Model homepage: https://huggingface.co/Kwai-Kolors/Kolors
+
 Download link:
-https://huggingface.co/Kwai-Kolors/Kolors/blob/main/unet/diffusion_pytorch_model.fp16.safetensors
+https://huggingface.co/Kwai-Kolors/Kolors/resolve/main/unet/diffusion_pytorch_model.fp16.safetensors
 
 
+### ChatGLM3 model download
 The chatglm3 is placed in the models/LLM/ folder
+
+Model homepage: https://huggingface.co/Kijai/ChatGLM3-safetensors
+
 Download link:
 https://huggingface.co/Kijai/ChatGLM3-safetensors/tree/main
 
 
 ### Official IP-Adapter-Plus model download link
 
-https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/blob/main/ip_adapter_plus_general.bin Download to models/ipadapter/
+Model homepage: https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus
 
-https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/blob/main/image_encoder/pytorch_model.bin Download to models/clip_vision/
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/ip_adapter_plus_general.bin Download to models/ipadapter/
+
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_encoder/pytorch_model.bin Download to models/clip_vision/
 
 ## FAQ
+和IPAdapter有关的错误(Errors related to IPAdapter)
++ 确保ComfyUI本体和ComfyUI_IPAdapter_plus已经更新到最新版本(Make sure ComfyUI ontology and ComfyUI_IPAdapter_plus are updated to the latest version)
+
+
 name 'round_up' is not defined
 + 参考:https://github.com/THUDM/ChatGLM2-6B/issues/272#issuecomment-1632164243 , 使用 pip install cpm_kernels 或者 pip install -U cpm_kernels 更新 cpm_kernels
 
 module 'comfy.model_detection' has no attribute 'unet_prefix_from_state_dict'
-+ 更新ComfyUI本体到最新版本
++ 更新ComfyUI本体到最新版本(Update ComfyUI ontology to the latest version)
 
 RuntimeError: Only Tensors of floating point dtype can require gradients
 + 尝试使用fp16版本的模型: https://huggingface.co/Kijai/ChatGLM3-safetensors/blob/main/chatglm3-fp16.safetensors
