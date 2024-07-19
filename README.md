@@ -28,8 +28,7 @@ https://huggingface.co/Kijai/ChatGLM3-safetensors/blob/main/chatglm3-fp16.safete
 
 
 ### 官方IP-Adapter-Plus模型下载地址
-
-https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/blob/main/ip_adapter_plus_genernal.bin 下载至 models/ipadapter/
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/blob/main/ip_adapter_plus_general.bin 下载至 models/ipadapter/
 
 https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/blob/main/image_encoder/pytorch_model.bin 下载至 models/clip_vision/
  
