@@ -64,7 +64,7 @@ The chatglm3 is placed in the models/LLM/ folder
 Model homepage: https://huggingface.co/Kijai/ChatGLM3-safetensors
 
 Download link:
-https://huggingface.co/Kijai/ChatGLM3-safetensors/tree/main
+https://huggingface.co/Kijai/ChatGLM3-safetensors/resolve/main/chatglm3-fp16.safetensors
 
 
 ### Official IP-Adapter-Plus model download link
