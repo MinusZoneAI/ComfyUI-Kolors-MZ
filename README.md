@@ -54,7 +54,7 @@ https://huggingface.co/Kijai/ChatGLM3-safetensors/tree/main
 
 ### Official IP-Adapter-Plus model download link
 
-https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/ip_adapter_plus_genernal.bin Download to models/ipadapter/
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/blob/main/ip_adapter_plus_general.bin Download to models/ipadapter/
 
 https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/blob/main/image_encoder/pytorch_model.bin Download to models/clip_vision/
 
