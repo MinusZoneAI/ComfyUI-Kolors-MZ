@@ -95,6 +95,13 @@ Error occurred when executing MZ_ChatGLM3Loader: 'ChatGLMModel' object has no at
 - Bilibili: [minus_zone](https://space.bilibili.com/5950992)
 - 小红书: [MinusZoneAI](https://www.xiaohongshu.com/user/profile/5f072e990000000001005472)
 
+## Stargazers
+[![Stargazers repo roster for @MinusZoneAI/ComfyUI-Kolors-MZ](https://reporoster.com/stars/MinusZoneAI/ComfyUI-Kolors-MZ)](https://github.com/MinusZoneAI/ComfyUI-Kolors-MZ/stargazers)
+
+## 衷心感谢赞助支持
+- iuiu
+
 ## Sponsorship
 <img src="https://github.com/user-attachments/assets/a7ef9684-4911-45b6-8071-a9b433dca6af"  width="200"/>
+
 
