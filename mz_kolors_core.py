@@ -136,9 +136,24 @@ def MZ_ChatGLM3TextEncodeV2_call(args):
         chatglm3_model,
         text,
     )
+    extra_kwargs = {
+        "pooled_output": pooled_output,
+    }
+    extra_cond_keys = [
+        "width",
+        "height",
+        "crop_w",
+        "crop_h",
+        "target_width",
+        "target_height"
+    ]
+    for key, value in args.items():
+        if key in extra_cond_keys:
+            extra_kwargs[key] = value
     return ([[
         prompt_embeds,
-        {"pooled_output": pooled_output},
+        # {"pooled_output": pooled_output},
+        extra_kwargs
     ]], )
 
 
