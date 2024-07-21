@@ -12,6 +12,8 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
 }
 
+MAX_RESOLUTION=16384
+
 AUTHOR_NAME = "MinusZone"
 CATEGORY_NAME = f"{AUTHOR_NAME} - Kolors"
 folder_paths.add_model_folder_path(
@@ -69,6 +71,38 @@ class MZ_ChatGLM3TextEncodeV2:
 NODE_CLASS_MAPPINGS["MZ_ChatGLM3_V2"] = MZ_ChatGLM3TextEncodeV2
 NODE_DISPLAY_NAME_MAPPINGS[
     "MZ_ChatGLM3_V2"] = f"{AUTHOR_NAME} - ChatGLM3TextEncodeV2"
+
+# for 2048 resolution
+class MZ_ChatGLM3TextEncodeAdvanceV2:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "chatglm3_model": ("CHATGLM3MODEL", ),
+                "text": ("STRING", {"multiline": True, "dynamicPrompts": True}),
+                "width": ("INT", {"default": 1024.0, "min": 0, "max": MAX_RESOLUTION}),
+                "height": ("INT", {"default": 1024.0, "min": 0, "max": MAX_RESOLUTION}),
+                "crop_w": ("INT", {"default": 0, "min": 0, "max": MAX_RESOLUTION}),
+                "crop_h": ("INT", {"default": 0, "min": 0, "max": MAX_RESOLUTION}),
+                "target_width": ("INT", {"default": 1024.0, "min": 0, "max": MAX_RESOLUTION}),
+                "target_height": ("INT", {"default": 1024.0, "min": 0, "max": MAX_RESOLUTION}),
+            }
+        }
+
+    RETURN_TYPES = ("CONDITIONING",)
+
+    FUNCTION = "encode"
+    CATEGORY = CATEGORY_NAME
+
+    def encode(self, **kwargs):
+        from . import mz_kolors_core
+        importlib.reload(mz_kolors_core)
+        return mz_kolors_core.MZ_ChatGLM3TextEncodeV2_call(kwargs)
+
+
+NODE_CLASS_MAPPINGS["MZ_ChatGLM3_Advance_V2"] = MZ_ChatGLM3TextEncodeAdvanceV2
+NODE_DISPLAY_NAME_MAPPINGS[
+    "MZ_ChatGLM3_Advance_V2"] = f"{AUTHOR_NAME} - ChatGLM3TextEncodeAdvanceV2"
 
 
 class MZ_KolorsUNETLoaderV2():
