@@ -1,12 +1,12 @@
 ![image](./examples/workflow_ipa.png)
 
 ## Recent changes 
+* [2024-07-21] 感谢来自yiwangsimple对Mac修复和测试的分支  https://github.com/yiwangsimple/ComfyUI-Kolors-MZ
+* [2024-07-21] 新增MZ_ChatGLM3TextEncodeAdvanceV2节点
 * [2024-07-18] IPA相关节点已在ComfyUI_IPAdapter_plus中支持
 * [2024-07-17] 新增支持IPAdapter_plus的加载器和高级应用节点 MZ_KolorsCLIPVisionLoader,MZ_IPAdapterModelLoaderKolors,MZ_IPAdapterAdvancedKolors
 * [2024-07-14] 删除自动兼容ControlNet, 新增MZ_KolorsControlNetPatch节点
   ![image](https://github.com/user-attachments/assets/73ae6447-c69d-4781-9c66-94e0029709ed)
-
-
 
 ## ComfyUI上Kolors的实现
 
@@ -75,7 +75,16 @@ https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/ip_adapte
 
 https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_encoder/pytorch_model.bin Download to models/clip_vision/
 
+
+
+## Contributors
+![image](https://contrib.rocks/image?repo=MinusZoneAI/ComfyUI-Kolors-MZ)
+
 ## FAQ
+
+Mac用户无法使用(Mac users cannot use)
++ Mac用户可移步至[ComfyUI-Kolors-MZ](https://github.com/yiwangsimple/ComfyUI-Kolors-MZ)  (Mac users can go to [ComfyUI-Kolors-MZ](https://github.com/yiwangsimple/ComfyUI-Kolors-MZ) )
+
 和IPAdapter有关的错误(Errors related to IPAdapter)
 + 确保ComfyUI本体和ComfyUI_IPAdapter_plus已经更新到最新版本(Make sure ComfyUI ontology and ComfyUI_IPAdapter_plus are updated to the latest version)
 
@@ -99,7 +108,6 @@ Error occurred when executing MZ_ChatGLM3Loader: 'ChatGLMModel' object has no at
 - [ComfyUI](https://github.com/comfyanonymous/ComfyUI) 
 - [ComfyUI_IPAdapter_plus](https://github.com/cubiq/ComfyUI_IPAdapter_plus)
 
-
 ## Star History
 
 <a href="https://star-history.com/#MinusZoneAI/ComfyUI-Kolors-MZ&Date">
@@ -119,8 +127,6 @@ Error occurred when executing MZ_ChatGLM3Loader: 'ChatGLMModel' object has no at
 ## Stargazers
 [![Stargazers repo roster for @MinusZoneAI/ComfyUI-Kolors-MZ](https://reporoster.com/stars/MinusZoneAI/ComfyUI-Kolors-MZ)](https://github.com/MinusZoneAI/ComfyUI-Kolors-MZ/stargazers)
 
-## 衷心感谢赞助支持
-- iuiu
 
 ## Sponsorship
 <img src="https://github.com/user-attachments/assets/a7ef9684-4911-45b6-8071-a9b433dca6af"  width="200"/>

@@ -26,10 +26,13 @@ class MZ_ChatGLM3Loader:
         # from .mz_kolors_utils import Utils
         # llm_dir = os.path.join(Utils.get_models_path(), "LLM")
         # print("llm_dir:", llm_dir)
-        # llm_models = Utils.listdir_models(llm_dir)
+        llm_models = folder_paths.get_filename_list("LLM")
+
+        # 筛选safetensors结尾的文件
+        llm_models = [model for model in llm_models if model.endswith("safetensors")]
 
         return {"required": {
-            "chatglm3_checkpoint": (folder_paths.get_filename_list("LLM"),),
+            "chatglm3_checkpoint": (llm_models,),
         }}
 
     RETURN_TYPES = ("CHATGLM3MODEL",)

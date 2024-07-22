@@ -91,6 +91,7 @@ def MZ_ChatGLM3Loader_call(args):
 
     from comfy.utils import load_torch_file
     from contextlib import nullcontext
+    is_accelerate_available = False
     try:
         from accelerate import init_empty_weights
         from accelerate.utils import set_module_tensor_to_device
@@ -120,6 +121,7 @@ def MZ_ChatGLM3Loader_call(args):
             set_module_tensor_to_device(
                 text_encoder, key, device=offload_device, value=text_encoder_sd[key])
     else:
+        print("WARNING: Accelerate not available, use load_state_dict load model")
         text_encoder.load_state_dict(text_encoder_sd)
 
     tokenizer_path = os.path.join(
