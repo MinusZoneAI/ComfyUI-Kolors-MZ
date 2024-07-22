@@ -76,10 +76,6 @@ https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/ip_adapte
 https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_encoder/pytorch_model.bin Download to models/clip_vision/
 
 
-
-## Contributors
-![image](https://contrib.rocks/image?repo=MinusZoneAI/ComfyUI-Kolors-MZ)
-
 ## FAQ
 
 Mac用户无法使用(Mac users cannot use)
