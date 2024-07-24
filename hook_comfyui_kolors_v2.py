@@ -74,11 +74,16 @@ class KolorsUNetModel(UNetModel):
 
 class KolorsSDXL(model_base.SDXL):
     def __init__(self, model_config, model_type=ModelType.EPS, device=None):
+        model_config.sampling_settings["beta_schedule"] = "linear"
+        model_config.sampling_settings["linear_start"] = 0.00085
+        model_config.sampling_settings["linear_end"] = 0.014
+        model_config.sampling_settings["timesteps"] = 1100
+        model_type = ModelType.EPS
         model_base.BaseModel.__init__(
             self, model_config, model_type, device=device, unet_model=KolorsUNetModel)
         self.embedder = Timestep(256)
         self.noise_augmentor = CLIPEmbeddingNoiseAugmentation(
-            **{"noise_schedule_config": {"timesteps": 1000, "beta_schedule": "squaredcos_cap_v2"}, "timestep_dim": 1280})
+            **{"noise_schedule_config": {"timesteps": 1100, "beta_schedule": "linear", "linear_start": 0.00085, "linear_end": 0.014}, "timestep_dim": 1280})
 
     def encode_adm(self, **kwargs):
         clip_pooled = sdxl_pooled(kwargs, self.noise_augmentor)

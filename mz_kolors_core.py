@@ -159,6 +159,39 @@ def MZ_ChatGLM3TextEncodeV2_call(args):
     ]], )
 
 
+def MZ_ChatGLM3Embeds2Conditioning_call(args):
+    kolors_embeds = args.get("kolors_embeds")
+
+    # kolors_embeds = {
+    #     'prompt_embeds': prompt_embeds,
+    #     'negative_prompt_embeds': negative_prompt_embeds,
+    #     'pooled_prompt_embeds': text_proj,
+    #     'negative_pooled_prompt_embeds': negative_text_proj
+    # }
+
+    positive = [[
+        kolors_embeds['prompt_embeds'],
+        {
+            "pooled_output": kolors_embeds['pooled_prompt_embeds'],
+            "width": args.get("width"),
+            "height": args.get("height"),
+            "crop_w": args.get("crop_w"),
+            "crop_h": args.get("crop_h"),
+            "target_width": args.get("target_width"),
+            "target_height": args.get("target_height")
+        }
+    ]]
+
+    negative = [[
+        kolors_embeds['negative_prompt_embeds'],
+        {
+            "pooled_output": kolors_embeds['negative_pooled_prompt_embeds'],
+        }
+    ]]
+
+    return (positive, negative)
+
+
 def MZ_KolorsUNETLoaderV2_call(kwargs):
 
     from . import hook_comfyui_kolors_v2
