@@ -12,7 +12,7 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
 }
 
-MAX_RESOLUTION=16384
+MAX_RESOLUTION = 16384
 
 AUTHOR_NAME = "MinusZone"
 CATEGORY_NAME = f"{AUTHOR_NAME} - Kolors"
@@ -29,7 +29,8 @@ class MZ_ChatGLM3Loader:
         llm_models = folder_paths.get_filename_list("LLM")
 
         # 筛选safetensors结尾的文件
-        llm_models = [model for model in llm_models if model.endswith("safetensors")]
+        llm_models = [
+            model for model in llm_models if model.endswith("safetensors")]
 
         return {"required": {
             "chatglm3_checkpoint": (llm_models,),
@@ -74,6 +75,39 @@ class MZ_ChatGLM3TextEncodeV2:
 NODE_CLASS_MAPPINGS["MZ_ChatGLM3_V2"] = MZ_ChatGLM3TextEncodeV2
 NODE_DISPLAY_NAME_MAPPINGS[
     "MZ_ChatGLM3_V2"] = f"{AUTHOR_NAME} - ChatGLM3TextEncodeV2"
+
+
+class MZ_ChatGLM3Embeds2Conditioning:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "kolors_embeds": ("KOLORS_EMBEDS", ),
+                "width": ("INT", {"default": 1024.0, "min": 0, "max": MAX_RESOLUTION}),
+                "height": ("INT", {"default": 1024.0, "min": 0, "max": MAX_RESOLUTION}),
+                "crop_w": ("INT", {"default": 0, "min": 0, "max": MAX_RESOLUTION}),
+                "crop_h": ("INT", {"default": 0, "min": 0, "max": MAX_RESOLUTION}),
+                "target_width": ("INT", {"default": 1024.0, "min": 0, "max": MAX_RESOLUTION}),
+                "target_height": ("INT", {"default": 1024.0, "min": 0, "max": MAX_RESOLUTION}),
+            }
+        }
+
+    RETURN_TYPES = ("CONDITIONING", "CONDITIONING",)
+    RETURN_NAMES = ("positive", "negative",)
+
+    FUNCTION = "embeds2conditioning"
+    CATEGORY = CATEGORY_NAME
+
+    def embeds2conditioning(self, **kwargs):
+        from . import mz_kolors_core
+        importlib.reload(mz_kolors_core)
+        return mz_kolors_core.MZ_ChatGLM3Embeds2Conditioning_call(kwargs)
+
+
+NODE_CLASS_MAPPINGS["MZ_ChatGLM3Embeds2Conditioning"] = MZ_ChatGLM3Embeds2Conditioning
+NODE_DISPLAY_NAME_MAPPINGS[
+    "MZ_ChatGLM3Embeds2Conditioning"] = f"{AUTHOR_NAME} - ChatGLM3Embeds2Conditioning"
+
 
 # for 2048 resolution
 class MZ_ChatGLM3TextEncodeAdvanceV2:
