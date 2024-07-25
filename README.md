@@ -1,6 +1,7 @@
 ![image](./examples/workflow_ipa.png)
 
 ## Recent changes 
+* [2024-07-25] 修正sampling_settings,参数来自 [scheduler_config.json](https://huggingface.co/Kwai-Kolors/Kolors/blob/main/scheduler/scheduler_config.json),仅V2生效
 * [2024-07-21] 感谢来自yiwangsimple对Mac修复和测试的分支  https://github.com/yiwangsimple/ComfyUI-Kolors-MZ
 * [2024-07-21] 新增MZ_ChatGLM3TextEncodeAdvanceV2节点
 * [2024-07-18] IPA相关节点已在ComfyUI_IPAdapter_plus中支持
