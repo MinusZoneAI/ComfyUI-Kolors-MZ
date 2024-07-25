@@ -214,6 +214,56 @@ NODE_CLASS_MAPPINGS["MZ_KolorsCLIPVisionLoader"] = MZ_KolorsCLIPVisionLoader
 NODE_DISPLAY_NAME_MAPPINGS["MZ_KolorsCLIPVisionLoader"] = f"{AUTHOR_NAME} - KolorsCLIPVisionLoader - Legacy"
 
 
+class MZ_ApplySDXLSamplingSettings():
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "model": ("MODEL", ),
+            }
+        }
+
+    RETURN_TYPES = ("MODEL", )
+
+    FUNCTION = "apply_sampling_settings"
+    CATEGORY = CATEGORY_NAME
+
+    def apply_sampling_settings(self, **kwargs):
+        from . import mz_kolors_core
+        importlib.reload(mz_kolors_core)
+        return mz_kolors_core.MZ_ApplySDXLSamplingSettings_call(kwargs)
+
+
+NODE_CLASS_MAPPINGS["MZ_ApplySDXLSamplingSettings"] = MZ_ApplySDXLSamplingSettings
+NODE_DISPLAY_NAME_MAPPINGS[
+    "MZ_ApplySDXLSamplingSettings"] = f"{AUTHOR_NAME} - ApplySDXLSamplingSettings"
+
+
+class MZ_ApplyCUDAGenerator():
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "model": ("MODEL", ),
+            }
+        }
+
+    RETURN_TYPES = ("MODEL", )
+
+    FUNCTION = "apply_cuda_generator"
+    CATEGORY = CATEGORY_NAME
+
+    def apply_cuda_generator(self, **kwargs):
+        from . import mz_kolors_core
+        importlib.reload(mz_kolors_core)
+        return mz_kolors_core.MZ_ApplyCUDAGenerator_call(kwargs)
+
+
+NODE_CLASS_MAPPINGS["MZ_ApplyCUDAGenerator"] = MZ_ApplyCUDAGenerator
+NODE_DISPLAY_NAME_MAPPINGS[
+    "MZ_ApplyCUDAGenerator"] = f"{AUTHOR_NAME} - ApplyCUDAGenerator"
+
+
 from .ComfyUI_IPAdapter_plus.IPAdapterPlus import IPAdapterAdvanced, IPAdapterModelLoader
 
 IPAdapterModelLoader.CATEGORY = CATEGORY_NAME + "/Legacy"

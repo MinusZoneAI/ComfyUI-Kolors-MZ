@@ -290,3 +290,53 @@ def MZ_KolorsCLIPVisionLoader_call(kwargs):
     with hook_comfyui_kolors_v2.apply_kolors():
         clip_vision = comfy.clip_vision.load(clip_path)
         return (clip_vision,)
+
+
+def MZ_ApplySDXLSamplingSettings_call(kwargs):
+    model = kwargs.get("model").clone() 
+
+    import comfy.model_sampling
+    sampling_base = comfy.model_sampling.ModelSamplingDiscrete
+    sampling_type = comfy.model_sampling.EPS
+
+    class SDXLSampling(sampling_base, sampling_type):
+        pass
+
+    model.model.model_config.sampling_settings["beta_schedule"] = "linear"
+    model.model.model_config.sampling_settings["linear_start"] = 0.00085
+    model.model.model_config.sampling_settings["linear_end"] = 0.012
+    model.model.model_config.sampling_settings["timesteps"] = 1000
+
+    model_sampling = SDXLSampling(model.model.model_config)
+    
+    model.add_object_patch("model_sampling", model_sampling)
+
+    return (model,)
+
+
+def MZ_ApplyCUDAGenerator_call(kwargs):
+    model = kwargs.get("model")
+
+    def prepare_noise(latent_image, seed, noise_inds=None):
+        """
+        creates random noise given a latent image and a seed.
+        optional arg skip can be used to skip and discard x number of noise generations for a given seed
+        """
+        generator = torch.Generator(device="cuda").manual_seed(seed)
+        if noise_inds is None:
+            return torch.randn(latent_image.size(), dtype=latent_image.dtype, layout=latent_image.layout, generator=generator, device="cuda")
+
+        unique_inds, inverse = np.unique(noise_inds, return_inverse=True)
+        noises = []
+        for i in range(unique_inds[-1] + 1):
+            noise = torch.randn([1] + list(latent_image.size())[1:], dtype=latent_image.dtype,
+                                layout=latent_image.layout, generator=generator, device="cuda")
+            if i in unique_inds:
+                noises.append(noise)
+        noises = [noises[i] for i in inverse]
+        noises = torch.cat(noises, axis=0)
+        return noises
+
+    import comfy.sample
+    comfy.sample.prepare_noise = prepare_noise
+    return (model,)
