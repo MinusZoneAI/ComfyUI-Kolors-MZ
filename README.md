@@ -49,6 +49,12 @@ https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_enc
 模型主页(Depth): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Depth
 模型主页(Canny): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Canny
 
+### Kolors-Inpainting模型下载地址
+模型主页: https://huggingface.co/Kwai-Kolors/Kolors-Inpainting
+
+https://huggingface.co/Kwai-Kolors/Kolors-Inpainting/resolve/main/unet/diffusion_pytorch_model.safetensors 下载至 models/unet/
+
+
 ## Implementation of Kolors on ComfyUI
 
 Reference from https://github.com/kijai/ComfyUI-KwaiKolorsWrapper
@@ -87,6 +93,11 @@ https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_enc
 ### Official ControlNet model download link
 Model homepage(Depth): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Depth
 Model homepage(Canny): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Canny
+
+### Kolors-Inpainting model download link
+Model homepage: https://huggingface.co/Kwai-Kolors/Kolors-Inpainting
+
+https://huggingface.co/Kwai-Kolors/Kolors-Inpainting/resolve/main/unet/diffusion_pytorch_model.safetensors Download to models/unet/
 
 ## 使用ComfyUI-KwaiKolorsWrapper在相同种子下测试结果 (Testing results with the same seed using ComfyUI-KwaiKolorsWrapper)
 测试工作流来自examples/workflow_same_seed_test.png 
