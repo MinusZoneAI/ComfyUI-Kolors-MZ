@@ -142,6 +142,27 @@ NODE_DISPLAY_NAME_MAPPINGS[
     "MZ_ChatGLM3_Advance_V2"] = f"{AUTHOR_NAME} - ChatGLM3TextEncodeAdvanceV2"
 
 
+class MZ_KolorsCheckpointLoaderSimple():
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": {"ckpt_name": (folder_paths.get_filename_list("checkpoints"), ),
+                             }}
+    RETURN_TYPES = ("MODEL", "VAE")
+    FUNCTION = "load_checkpoint"
+
+    CATEGORY = CATEGORY_NAME
+
+    def load_checkpoint(self, **kwargs):
+        from . import mz_kolors_core
+        importlib.reload(mz_kolors_core)
+        return mz_kolors_core.MZ_KolorsCheckpointLoaderSimple_call(kwargs)
+
+
+NODE_CLASS_MAPPINGS["MZ_KolorsCheckpointLoaderSimple"] = MZ_KolorsCheckpointLoaderSimple
+NODE_DISPLAY_NAME_MAPPINGS[
+    "MZ_KolorsCheckpointLoaderSimple"] = f"{AUTHOR_NAME} - KolorsCheckpointLoaderSimple"
+
+
 class MZ_KolorsUNETLoaderV2():
     @classmethod
     def INPUT_TYPES(s):

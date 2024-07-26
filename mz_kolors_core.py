@@ -210,6 +210,22 @@ def MZ_KolorsUNETLoaderV2_call(kwargs):
         return (model, )
 
 
+def MZ_KolorsCheckpointLoaderSimple_call(kwargs):
+    checkpoint_name = kwargs.get("ckpt_name")
+
+    ckpt_path = folder_paths.get_full_path("checkpoints", checkpoint_name)
+
+    from . import hook_comfyui_kolors_v2
+    import comfy.sd
+
+    with hook_comfyui_kolors_v2.apply_kolors():
+        out = comfy.sd.load_checkpoint_guess_config(
+            ckpt_path, output_vae=True, output_clip=False, embedding_directory=folder_paths.get_folder_paths("embeddings"))
+
+        unet, _, vae = out[:3]
+        return (unet, vae)
+
+
 from comfy.cldm.cldm import ControlNet
 from comfy.controlnet import ControlLora
 
@@ -293,7 +309,7 @@ def MZ_KolorsCLIPVisionLoader_call(kwargs):
 
 
 def MZ_ApplySDXLSamplingSettings_call(kwargs):
-    model = kwargs.get("model").clone() 
+    model = kwargs.get("model").clone()
 
     import comfy.model_sampling
     sampling_base = comfy.model_sampling.ModelSamplingDiscrete
@@ -308,7 +324,7 @@ def MZ_ApplySDXLSamplingSettings_call(kwargs):
     model.model.model_config.sampling_settings["timesteps"] = 1000
 
     model_sampling = SDXLSampling(model.model.model_config)
-    
+
     model.add_object_patch("model_sampling", model_sampling)
 
     return (model,)
