@@ -16,6 +16,7 @@
 使用ComfyUI原生采样
 
 工作流在examples/workflow.png中获取
+
  
 ### UNET模型下载
 unet模型放置在 models/unet/ 文件夹下
@@ -39,7 +40,6 @@ chatglm3放置在 models/LLM/ 文件夹下
 https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/ip_adapter_plus_general.bin 下载至 models/ipadapter/
 
 https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_encoder/pytorch_model.bin 下载至 models/clip_vision/
- 
 
 ## Implementation of Kolors on ComfyUI
 
@@ -76,6 +76,13 @@ https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/ip_adapte
 
 https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_encoder/pytorch_model.bin Download to models/clip_vision/
 
+
+## 使用ComfyUI-KwaiKolorsWrapper在相同种子下测试结果 (Testing results with the same seed using ComfyUI-KwaiKolorsWrapper)
+测试工作流来自examples/workflow_same_seed_test.png 
+
+The test workflow comes from examples/workflow_same_seed_test.png
+
+![image](./examples/workflow_same_seed_test.png)
 
 ## FAQ
 
