@@ -1,6 +1,7 @@
 ![image](./examples/workflow_ipa.png)
 
 ## Recent changes 
+* [2024-07-27] 新增MZ_KolorsControlNetLoader节点,用于加载可图ControlNet官方模型
 * [2024-07-26] 新增MZ_ApplySDXLSamplingSettings节点,用于V2版本重新回到SDXL的scheduler配置.
   ![image](https://github.com/user-attachments/assets/8c3be6bf-4744-478f-8660-4842a4558a1f)
 
@@ -44,6 +45,10 @@ https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/ip_adapte
 
 https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_encoder/pytorch_model.bin 下载至 models/clip_vision/
 
+### 官方ControlNet模型下载地址
+模型主页(Depth): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Depth
+模型主页(Canny): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Canny
+
 ## Implementation of Kolors on ComfyUI
 
 Reference from https://github.com/kijai/ComfyUI-KwaiKolorsWrapper
@@ -79,6 +84,9 @@ https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/ip_adapte
 
 https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_encoder/pytorch_model.bin Download to models/clip_vision/
 
+### Official ControlNet model download link
+Model homepage(Depth): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Depth
+Model homepage(Canny): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Canny
 
 ## 使用ComfyUI-KwaiKolorsWrapper在相同种子下测试结果 (Testing results with the same seed using ComfyUI-KwaiKolorsWrapper)
 测试工作流来自examples/workflow_same_seed_test.png 

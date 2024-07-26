@@ -230,10 +230,68 @@ from comfy.cldm.cldm import ControlNet
 from comfy.controlnet import ControlLora
 
 
+def MZ_KolorsControlNetLoader_call(kwargs):
+    control_net_name = kwargs.get("control_net_name")
+    controlnet_path = folder_paths.get_full_path(
+        "controlnet", control_net_name)
+
+    from torch import nn
+    from . import hook_comfyui_kolors_v2
+    import comfy.controlnet
+
+    with hook_comfyui_kolors_v2.apply_kolors():
+        control_net = comfy.controlnet.load_controlnet(controlnet_path)
+        if hasattr(control_net.control_model, "encoder_hid_proj"):
+            return (control_net, )
+
+        controlnet_data = comfy.utils.load_torch_file(
+            controlnet_path, safe_load=True)
+
+        encoder_hid_proj = nn.Linear(
+            controlnet_data["encoder_hid_proj.weight"].shape[1], controlnet_data["encoder_hid_proj.weight"].shape[0], bias=True)
+        encoder_hid_proj.load_state_dict({
+            "weight": controlnet_data["encoder_hid_proj.weight"],
+            "bias": controlnet_data["encoder_hid_proj.bias"]
+        })
+        del controlnet_data
+        gc.collect()
+        encoder_hid_proj = encoder_hid_proj.to(control_net.device).eval()
+
+        super_forward = ControlNet.forward
+
+        def KolorsControlNet_forward(self, x, hint, timesteps, context, **kwargs):
+            with torch.cuda.amp.autocast(enabled=True):
+                context = self.encoder_hid_proj(context)
+                return super_forward(self, x, hint, timesteps, context, **kwargs)
+
+        super_copy = comfy.controlnet.ControlNet.copy
+
+        def KolorsControlNet_copy(self):
+            c = super_copy(self)
+            c.control_model.forward = MethodType(
+                KolorsControlNet_forward, c.control_model)
+            return c
+
+        setattr(control_net.control_model,
+                "encoder_hid_proj", encoder_hid_proj)
+
+        control_net.control_model.forward = MethodType(
+            KolorsControlNet_forward, control_net.control_model)
+        control_net.copy = MethodType(
+            KolorsControlNet_copy, control_net)
+
+        return (control_net, )
+
+
 def MZ_KolorsControlNetPatch_call(kwargs):
+    import copy
     from . import hook_comfyui_kolors_v2
     model = kwargs.get("model")
     control_net = kwargs.get("control_net")
+    if hasattr(control_net.control_model, "encoder_hid_proj"):
+        return (control_net,)
+
+    control_net = control_net.copy()
     import comfy.controlnet
     if isinstance(control_net, ControlLora):
         del_keys = []

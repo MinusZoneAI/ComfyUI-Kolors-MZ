@@ -163,6 +163,30 @@ NODE_DISPLAY_NAME_MAPPINGS[
     "MZ_KolorsCheckpointLoaderSimple"] = f"{AUTHOR_NAME} - KolorsCheckpointLoaderSimple"
 
 
+class MZ_KolorsControlNetLoader:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": {
+            "control_net_name": (folder_paths.get_filename_list("controlnet"), ),
+            # "seed": ("INT", {"default": 0, "min": 0, "max": 1000000}),
+        }}
+
+    RETURN_TYPES = ("CONTROL_NET",)
+    FUNCTION = "load_controlnet"
+
+    CATEGORY = CATEGORY_NAME
+
+    def load_controlnet(self, **kwargs):
+        from . import mz_kolors_core
+        importlib.reload(mz_kolors_core)
+        return mz_kolors_core.MZ_KolorsControlNetLoader_call(kwargs)
+
+
+NODE_CLASS_MAPPINGS["MZ_KolorsControlNetLoader"] = MZ_KolorsControlNetLoader
+NODE_DISPLAY_NAME_MAPPINGS[
+    "MZ_KolorsControlNetLoader"] = f"{AUTHOR_NAME} - KolorsControlNetLoader"
+
+
 class MZ_KolorsUNETLoaderV2():
     @classmethod
     def INPUT_TYPES(s):
