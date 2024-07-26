@@ -165,7 +165,13 @@ def kolors_unet_config_from_diffusers_unet(state_dict, dtype=None):
               'use_linear_in_transformer': True, 'context_dim': 2048, 'num_head_channels': 64, 'transformer_depth_output': [0, 0, 0, 2, 2, 2, 10, 10, 10],
               'use_temporal_attention': False, 'use_temporal_resblock': False}
 
-    supported_models = [Kolors]
+    Kolors_inpaint = {'use_checkpoint': False, 'image_size': 32, 'out_channels': 4, 'use_spatial_transformer': True, 'legacy': False,
+                      'num_classes': 'sequential', 'adm_in_channels': 5632, 'dtype': dtype, 'in_channels': 9, 'model_channels': 320,
+                      'num_res_blocks': [2, 2, 2], 'transformer_depth': [0, 0, 2, 2, 10, 10], 'channel_mult': [1, 2, 4], 'transformer_depth_middle': 10,
+                      'use_linear_in_transformer': True, 'context_dim': 2048, 'num_head_channels': 64, 'transformer_depth_output': [0, 0, 0, 2, 2, 2, 10, 10, 10],
+                      'use_temporal_attention': False, 'use_temporal_resblock': False}
+
+    supported_models = [Kolors, Kolors_inpaint]
 
     for unet_config in supported_models:
         matches = True
