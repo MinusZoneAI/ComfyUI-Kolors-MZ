@@ -241,45 +241,6 @@ def MZ_KolorsControlNetLoader_call(kwargs):
 
     with hook_comfyui_kolors_v2.apply_kolors():
         control_net = comfy.controlnet.load_controlnet(controlnet_path)
-        if hasattr(control_net.control_model, "encoder_hid_proj"):
-            return (control_net, )
-
-        controlnet_data = comfy.utils.load_torch_file(
-            controlnet_path, safe_load=True)
-
-        encoder_hid_proj = nn.Linear(
-            controlnet_data["encoder_hid_proj.weight"].shape[1], controlnet_data["encoder_hid_proj.weight"].shape[0], bias=True)
-        encoder_hid_proj.load_state_dict({
-            "weight": controlnet_data["encoder_hid_proj.weight"],
-            "bias": controlnet_data["encoder_hid_proj.bias"]
-        })
-        del controlnet_data
-        gc.collect()
-        encoder_hid_proj = encoder_hid_proj.to(control_net.device).eval()
-
-        super_forward = ControlNet.forward
-
-        def KolorsControlNet_forward(self, x, hint, timesteps, context, **kwargs):
-            with torch.cuda.amp.autocast(enabled=True):
-                context = self.encoder_hid_proj(context)
-                return super_forward(self, x, hint, timesteps, context, **kwargs)
-
-        super_copy = comfy.controlnet.ControlNet.copy
-
-        def KolorsControlNet_copy(self):
-            c = super_copy(self)
-            c.control_model.forward = MethodType(
-                KolorsControlNet_forward, c.control_model)
-            return c
-
-        setattr(control_net.control_model,
-                "encoder_hid_proj", encoder_hid_proj)
-
-        control_net.control_model.forward = MethodType(
-            KolorsControlNet_forward, control_net.control_model)
-        control_net.copy = MethodType(
-            KolorsControlNet_copy, control_net)
-
         return (control_net, )
 
 
@@ -291,7 +252,8 @@ def MZ_KolorsControlNetPatch_call(kwargs):
     if hasattr(control_net.control_model, "encoder_hid_proj"):
         return (control_net,)
 
-    control_net = control_net.copy()
+    control_net = copy.deepcopy(control_net)
+
     import comfy.controlnet
     if isinstance(control_net, ControlLora):
         del_keys = []
@@ -333,17 +295,21 @@ def MZ_KolorsControlNetPatch_call(kwargs):
             KolorsControlLora_copy, control_net)
 
     elif isinstance(control_net, comfy.controlnet.ControlNet):
+        import comfy.model_management
         model_label_emb = model.model.diffusion_model.label_emb
 
         control_net.control_model.label_emb = model_label_emb
+        setattr(control_net.control_model, "encoder_hid_proj",
+                model.model.diffusion_model.encoder_hid_proj)
 
-        control_net.control_model_wrapped.model.label_emb = model_label_emb
+        control_net.control_model_wrapped = comfy.model_patcher.ModelPatcher(
+            control_net.control_model, load_device=control_net.load_device, offload_device=comfy.model_management.unet_offload_device())
 
         super_forward = ControlNet.forward
 
         def KolorsControlNet_forward(self, x, hint, timesteps, context, **kwargs):
             with torch.cuda.amp.autocast(enabled=True):
-                context = model.model.diffusion_model.encoder_hid_proj(context)
+                context = self.encoder_hid_proj(context)
                 return super_forward(self, x, hint, timesteps, context, **kwargs)
 
         control_net.control_model.forward = MethodType(
