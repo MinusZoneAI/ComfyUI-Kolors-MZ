@@ -172,6 +172,7 @@ class MZ_KolorsControlNetLoader:
         }}
 
     RETURN_TYPES = ("CONTROL_NET",)
+    RETURN_NAMES = ("ControlNet",)
     FUNCTION = "load_controlnet"
 
     CATEGORY = CATEGORY_NAME

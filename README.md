@@ -92,6 +92,7 @@ https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_enc
 
 ### Official ControlNet model download link
 Model homepage(Depth): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Depth
+
 Model homepage(Canny): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Canny
 
 ### Kolors-Inpainting model download link
@@ -107,13 +108,15 @@ The test workflow comes from examples/workflow_same_seed_test.png
 ![image](./examples/workflow_same_seed_test.png)
 
 ## FAQ
+加载模型时出现的错误
++ 目前kolors有两个版本, 一种是unet类型采用unet加载器, 一种是放checkpoints文件夹用KolorsCheckpointLoaderSimple加载器, 如果你的模型来自huggingface的unet文件夹, 优先尝试使用unet加载器 (Currently, there are two versions of kolors, one is unet type using unet loader, and the other is placed in the checkpoints folder using KolorsCheckpointLoaderSimple loader. If your model comes from the huggingface unet folder, try to use the unet loader first)
++ 如果你无法确定模型类型, 那就都试一下 (If you are not sure about the model type, try both)
 
 Mac用户无法使用(Mac users cannot use)
 + Mac用户可移步至[ComfyUI-Kolors-MZ](https://github.com/yiwangsimple/ComfyUI-Kolors-MZ)  (Mac users can go to [ComfyUI-Kolors-MZ](https://github.com/yiwangsimple/ComfyUI-Kolors-MZ) )
 
 和IPAdapter有关的错误(Errors related to IPAdapter)
 + 确保ComfyUI本体和ComfyUI_IPAdapter_plus已经更新到最新版本(Make sure ComfyUI ontology and ComfyUI_IPAdapter_plus are updated to the latest version)
-
 
 name 'round_up' is not defined
 + 参考:https://github.com/THUDM/ChatGLM2-6B/issues/272#issuecomment-1632164243 , 使用 pip install cpm_kernels 或者 pip install -U cpm_kernels 更新 cpm_kernels
