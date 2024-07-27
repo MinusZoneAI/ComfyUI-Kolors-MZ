@@ -247,9 +247,13 @@ def MZ_KolorsControlNetLoader_call(kwargs):
 def MZ_KolorsControlNetPatch_call(kwargs):
     import copy
     from . import hook_comfyui_kolors_v2
+    import comfy.model_management
+    import comfy.model_patcher
+
     model = kwargs.get("model")
     control_net = kwargs.get("control_net")
-    if hasattr(control_net.control_model, "encoder_hid_proj"):
+
+    if hasattr(control_net, "control_model") and hasattr(control_net.control_model, "encoder_hid_proj"):
         return (control_net,)
 
     control_net = copy.deepcopy(control_net)
@@ -265,25 +269,32 @@ def MZ_KolorsControlNetPatch_call(kwargs):
             control_net.control_weights.pop(k)
 
         super_pre_run = ControlLora.pre_run
-        super_copy = ControlLora.copy
-
         super_forward = ControlNet.forward
 
         def KolorsControlNet_forward(self, x, hint, timesteps, context, **kwargs):
             with torch.cuda.amp.autocast(enabled=True):
-                context = model.model.diffusion_model.encoder_hid_proj(context)
+                context = self.encoder_hid_proj(context)
                 return super_forward(self, x, hint, timesteps, context, **kwargs)
 
         def KolorsControlLora_pre_run(self, *args, **kwargs):
             result = super_pre_run(self, *args, **kwargs)
 
             if hasattr(self, "control_model"):
+                if hasattr(self.control_model, "encoder_hid_proj"):
+                    return result
+
+                setattr(self.control_model, "encoder_hid_proj",
+                        model.model.diffusion_model.encoder_hid_proj)
+
                 self.control_model.forward = MethodType(
                     KolorsControlNet_forward, self.control_model)
+
             return result
 
         control_net.pre_run = MethodType(
             KolorsControlLora_pre_run, control_net)
+
+        super_copy = ControlLora.copy
 
         def KolorsControlLora_copy(self, *args, **kwargs):
             c = super_copy(self, *args, **kwargs)
@@ -294,8 +305,9 @@ def MZ_KolorsControlNetPatch_call(kwargs):
         control_net.copy = MethodType(
             KolorsControlLora_copy, control_net)
 
+        control_net = copy.deepcopy(control_net)
+
     elif isinstance(control_net, comfy.controlnet.ControlNet):
-        import comfy.model_management
         model_label_emb = model.model.diffusion_model.label_emb
 
         control_net.control_model.label_emb = model_label_emb

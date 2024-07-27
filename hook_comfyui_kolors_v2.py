@@ -255,10 +255,10 @@ class KolorsControlNet(ControlNet):
     def __init__(self, *args, **kwargs):
         adm_in_channels = kwargs["adm_in_channels"]
         if adm_in_channels == 2816:
-            # 警告: 使用的是SDXL类型的ControlNet模型, 强制将num_classes设置为None
-            warnings.warn(
-                "The ControlNet model is using the SDXL type, forcing num_classes to None")
-            kwargs["num_classes"] = None
+            # 异常: 该加载器不支持SDXL类型, 请使用ControlNet加载器+KolorsControlNetPatch节点
+            raise Exception(
+                "This loader does not support SDXL type, please use ControlNet loader + KolorsControlNetPatch node")
+
         super().__init__(*args, **kwargs)
         self.encoder_hid_proj = nn.Linear(
             4096, 2048, bias=True)
