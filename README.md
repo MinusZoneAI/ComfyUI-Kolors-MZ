@@ -47,6 +47,7 @@ https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_enc
 
 ### 官方ControlNet模型下载地址
 模型主页(Depth): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Depth
+
 模型主页(Canny): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Canny
 
 ### Kolors-Inpainting模型下载地址
