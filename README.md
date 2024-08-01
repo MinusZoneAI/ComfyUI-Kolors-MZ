@@ -1,6 +1,7 @@
 ![image](./examples/workflow_ipa.png)
 
 ## Recent changes 
+* [2024-07-27] 支持faceid,新增一些相关节点,工作流见examples/workflow_ipa_faceid.png
 * [2024-07-27] 新增MZ_KolorsControlNetLoader节点,用于加载可图ControlNet官方模型
 * [2024-07-26] 新增MZ_ApplySDXLSamplingSettings节点,用于V2版本重新回到SDXL的scheduler配置.
   ![image](https://github.com/user-attachments/assets/8c3be6bf-4744-478f-8660-4842a4558a1f)
@@ -55,6 +56,17 @@ https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_enc
 
 https://huggingface.co/Kwai-Kolors/Kolors-Inpainting/resolve/main/unet/diffusion_pytorch_model.safetensors 下载至 models/unet/
 
+### 官方Kolors-IP-Adapter-FaceID-Plus模型下载地址
+模型主页: https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-FaceID-Plus
+
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-FaceID-Plus/resolve/main/ipa-faceid-plus.bin 下载至 models/ipadapter/
+
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-FaceID-Plus/resolve/main/clip-vit-large-patch14-336/pytorch_model.bin 下载至 models/clip_vision/
+
+https://huggingface.co/MonsterMMORPG/tools/resolve/main/antelopev2.zip 下载并解压至 models/insightface/models/antelopev2/*.onnx
+
+
+
 
 ## Implementation of Kolors on ComfyUI
 
@@ -100,6 +112,15 @@ Model homepage(Canny): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Cann
 Model homepage: https://huggingface.co/Kwai-Kolors/Kolors-Inpainting
 
 https://huggingface.co/Kwai-Kolors/Kolors-Inpainting/resolve/main/unet/diffusion_pytorch_model.safetensors Download to models/unet/
+
+### Official Kolors-IP-Adapter-FaceID-Plus model download link
+Model homepage: https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-FaceID-Plus
+
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-FaceID-Plus/resolve/main/ipa-faceid-plus.bin Download to models/ipadapter/
+
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-FaceID-Plus/resolve/main/clip-vit-large-patch14-336/pytorch_model.bin Download to models/clip_vision/
+
+https://huggingface.co/MonsterMMORPG/tools/resolve/main/antelopev2.zip Download and unzip to models/insightface/models/antelopev2/*.onnx
 
 ## 使用ComfyUI-KwaiKolorsWrapper在相同种子下测试结果 (Testing results with the same seed using ComfyUI-KwaiKolorsWrapper)
 测试工作流来自examples/workflow_same_seed_test.png 
