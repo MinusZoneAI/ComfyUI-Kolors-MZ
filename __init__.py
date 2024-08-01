@@ -310,7 +310,7 @@ NODE_DISPLAY_NAME_MAPPINGS[
     "MZ_ApplyCUDAGenerator"] = f"{AUTHOR_NAME} - ApplyCUDAGenerator"
 
 
-from .ComfyUI_IPAdapter_plus.IPAdapterPlus import IPAdapterAdvanced, IPAdapterModelLoader
+from .ComfyUI_IPAdapter_plus.IPAdapterPlus import IPAdapterAdvanced, IPAdapterModelLoader, IPAdapterInsightFaceLoader, IPAdapterFaceID
 
 IPAdapterModelLoader.CATEGORY = CATEGORY_NAME + "/Legacy"
 NODE_CLASS_MAPPINGS["MZ_IPAdapterModelLoaderKolors"] = IPAdapterModelLoader
@@ -321,6 +321,18 @@ IPAdapterAdvanced.CATEGORY = CATEGORY_NAME + "/Legacy"
 NODE_CLASS_MAPPINGS["MZ_IPAdapterAdvancedKolors"] = IPAdapterAdvanced
 NODE_DISPLAY_NAME_MAPPINGS[
     "MZ_IPAdapterAdvancedKolors"] = f"IPAdapterAdvanced(kolors) - Legacy"
+
+IPAdapterInsightFaceLoader.CATEGORY = CATEGORY_NAME
+NODE_CLASS_MAPPINGS["MZ_IPAdapterInsightFaceLoader"] = IPAdapterInsightFaceLoader
+
+NODE_DISPLAY_NAME_MAPPINGS[
+    "MZ_IPAdapterInsightFaceLoader"] = f"IPAdapterInsightFaceLoader(kolors)"
+
+IPAdapterFaceID.CATEGORY = CATEGORY_NAME
+NODE_CLASS_MAPPINGS["MZ_IPAdapterFaceID"] = IPAdapterFaceID
+
+NODE_DISPLAY_NAME_MAPPINGS[
+    "MZ_IPAdapterFaceID"] = f"IPAdapterFaceID(kolors)"
 
 from . import mz_kolors_legacy
 NODE_CLASS_MAPPINGS.update(mz_kolors_legacy.NODE_CLASS_MAPPINGS)
