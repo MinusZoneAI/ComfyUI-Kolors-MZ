@@ -56,12 +56,12 @@ def get_torch_device():
     if model_management.directml_enabled: 
         return model_management.directml_device
     if model_management.cpu_state == model_management.CPUState.MPS:
-        return torch.device("mps")
+        return "mps"
     if model_management.cpu_state == model_management.CPUState.CPU:
-        return torch.device("cpu")
+        return "cpu"
     else:
         if model_management.is_intel_xpu():
-            return torch.device("xpu", torch.xpu.current_device())
+            return "xpu"
         else:
             return "cuda"
  
