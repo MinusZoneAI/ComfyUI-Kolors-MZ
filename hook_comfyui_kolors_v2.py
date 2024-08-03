@@ -6,6 +6,7 @@ import comfy.model_detection as model_detection
 import comfy.supported_models
 import comfy.utils
 
+import comfy.model_management as model_management
 import torch
 from comfy import model_base
 from comfy.model_base import sdxl_pooled, CLIPEmbeddingNoiseAugmentation, Timestep, ModelType
@@ -13,6 +14,7 @@ from comfy.model_base import sdxl_pooled, CLIPEmbeddingNoiseAugmentation, Timest
 
 from comfy.ldm.modules.diffusionmodules.openaimodel import UNetModel
 from comfy.cldm.cldm import ControlNet
+import torch.amp
 
 # try:
 #     import comfy.samplers as samplers
@@ -50,6 +52,19 @@ from comfy.cldm.cldm import ControlNet
 #     print("CFGGuider not found, skipping patching")
 
 
+def get_torch_device(): 
+    if model_management.directml_enabled: 
+        return model_management.directml_device
+    if model_management.cpu_state == model_management.CPUState.MPS:
+        return torch.device("mps")
+    if model_management.cpu_state == model_management.CPUState.CPU:
+        return torch.device("cpu")
+    else:
+        if model_management.is_intel_xpu():
+            return torch.device("xpu", torch.xpu.current_device())
+        else:
+            return "cuda"
+ 
 class KolorsUNetModel(UNetModel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -57,19 +72,16 @@ class KolorsUNetModel(UNetModel):
             4096, 2048, bias=True)
 
     def forward(self, *args, **kwargs):
-        with torch.cuda.amp.autocast(enabled=True):
+        dtype = model_management.unet_dtype()
+        if dtype not in [torch.float32, torch.float16, torch.bfloat16]:
+            dtype = torch.float16 if model_management.should_use_fp16() else torch.float32
+
+        with torch.amp.autocast(enabled=True, device_type=get_torch_device()):
             if "context" in kwargs:
                 kwargs["context"] = self.encoder_hid_proj(
-                    kwargs["context"])
-
-                # if "y" in kwargs:
-                #     if kwargs["y"].shape[1] == 2816:
-                #         # 扩展至5632
-                #         kwargs["y"] = torch.cat(
-                #             torch.zeros(kwargs["y"].shape[0], 2816).to(kwargs["y"].device), kwargs["y"], dim=1)
-
+                    kwargs["context"]) 
             result = super().forward(*args, **kwargs)
-            return result
+        return result
 
 
 class KolorsSDXL(model_base.SDXL):
@@ -264,7 +276,7 @@ class KolorsControlNet(ControlNet):
             4096, 2048, bias=True)
 
     def forward(self, *args, **kwargs):
-        with torch.cuda.amp.autocast(enabled=True):
+        with torch.amp.autocast(enabled=True, device_type=get_torch_device()):
             if "context" in kwargs:
                 kwargs["context"] = self.encoder_hid_proj(
                     kwargs["context"])
