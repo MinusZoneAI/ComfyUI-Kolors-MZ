@@ -21,7 +21,6 @@
 使用ComfyUI原生采样
 
 工作流在examples/workflow.png中获取
-
  
 ### UNET模型下载
 unet模型放置在 models/unet/ 文件夹下
@@ -39,22 +38,21 @@ chatglm3放置在 models/LLM/ 文件夹下
 下载地址: https://huggingface.co/Kijai/ChatGLM3-safetensors/resolve/main/chatglm3-fp16.safetensors
 
 
+## IPAdapter实现推荐使用 [cubiq/ComfyUI_IPAdapter_plus](https://github.com/cubiq/ComfyUI_IPAdapter_plus)
+faceid相关节点已经在其中支持,IPAdapter实现需要更新ComfyUI_IPAdapter_plus到最新版本
+### IPAdapter工作流
+https://github.com/cubiq/ComfyUI_IPAdapter_plus/blob/main/examples/ipadapter_kolors.json
+
+### IPAdapter_FaceIDv2工作流
+https://github.com/cubiq/ComfyUI_IPAdapter_plus/blob/main/examples/IPAdapter_FaceIDv2_Kolors.json
+
+
 ### 官方IP-Adapter-Plus模型下载地址
 模型主页: https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus
 
 https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/ip_adapter_plus_general.bin 下载至 models/ipadapter/
 
 https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_encoder/pytorch_model.bin 下载至 models/clip_vision/
-
-### 官方ControlNet模型下载地址
-模型主页(Depth): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Depth
-
-模型主页(Canny): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Canny
-
-### Kolors-Inpainting模型下载地址
-模型主页: https://huggingface.co/Kwai-Kolors/Kolors-Inpainting
-
-https://huggingface.co/Kwai-Kolors/Kolors-Inpainting/resolve/main/unet/diffusion_pytorch_model.safetensors 下载至 models/unet/
 
 ### 官方Kolors-IP-Adapter-FaceID-Plus模型下载地址
 模型主页: https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-FaceID-Plus
@@ -65,6 +63,15 @@ https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-FaceID-Plus/resolve/main/cl
 
 https://huggingface.co/MonsterMMORPG/tools/resolve/main/antelopev2.zip 下载并解压至 models/insightface/models/antelopev2/*.onnx
 
+### 官方ControlNet模型下载地址
+模型主页(Depth): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Depth
+
+模型主页(Canny): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Canny
+
+### Kolors-Inpainting模型下载地址
+模型主页: https://huggingface.co/Kwai-Kolors/Kolors-Inpainting
+
+https://huggingface.co/Kwai-Kolors/Kolors-Inpainting/resolve/main/unet/diffusion_pytorch_model.safetensors 下载至 models/unet/
 
 
 
@@ -95,6 +102,15 @@ Download link:
 https://huggingface.co/Kijai/ChatGLM3-safetensors/resolve/main/chatglm3-fp16.safetensors
 
 
+## IPAdapter implementation is recommended to use [cubiq/ComfyUI_IPAdapter_plus](https://github.com/cubiq/ComfyUI_IPAdapter_plus)
+The faceid related nodes have been supported in it, and the IPAdapter implementation needs to update ComfyUI_IPAdapter_plus to the latest version
+### IPAdapter workflow
+https://github.com/cubiq/ComfyUI_IPAdapter_plus/blob/main/examples/ipadapter_kolors.json
+
+### IPAdapter_FaceIDv2 workflow
+https://github.com/cubiq/ComfyUI_IPAdapter_plus/blob/main/examples/IPAdapter_FaceIDv2_Kolors.json
+
+
 ### Official IP-Adapter-Plus model download link
 
 Model homepage: https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus
@@ -102,6 +118,16 @@ Model homepage: https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus
 https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/ip_adapter_plus_general.bin Download to models/ipadapter/
 
 https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-Plus/resolve/main/image_encoder/pytorch_model.bin Download to models/clip_vision/
+
+
+### Official Kolors-IP-Adapter-FaceID-Plus model download link
+Model homepage: https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-FaceID-Plus
+
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-FaceID-Plus/resolve/main/ipa-faceid-plus.bin Download to models/ipadapter/
+
+https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-FaceID-Plus/resolve/main/clip-vit-large-patch14-336/pytorch_model.bin Download to models/clip_vision/
+
+https://huggingface.co/MonsterMMORPG/tools/resolve/main/antelopev2.zip Download and unzip to models/insightface/models/antelopev2/*.onnx
 
 ### Official ControlNet model download link
 Model homepage(Depth): https://huggingface.co/Kwai-Kolors/Kolors-ControlNet-Depth
@@ -113,14 +139,6 @@ Model homepage: https://huggingface.co/Kwai-Kolors/Kolors-Inpainting
 
 https://huggingface.co/Kwai-Kolors/Kolors-Inpainting/resolve/main/unet/diffusion_pytorch_model.safetensors Download to models/unet/
 
-### Official Kolors-IP-Adapter-FaceID-Plus model download link
-Model homepage: https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-FaceID-Plus
-
-https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-FaceID-Plus/resolve/main/ipa-faceid-plus.bin Download to models/ipadapter/
-
-https://huggingface.co/Kwai-Kolors/Kolors-IP-Adapter-FaceID-Plus/resolve/main/clip-vit-large-patch14-336/pytorch_model.bin Download to models/clip_vision/
-
-https://huggingface.co/MonsterMMORPG/tools/resolve/main/antelopev2.zip Download and unzip to models/insightface/models/antelopev2/*.onnx
 
 ## 使用ComfyUI-KwaiKolorsWrapper在相同种子下测试结果 (Testing results with the same seed using ComfyUI-KwaiKolorsWrapper)
 测试工作流来自examples/workflow_same_seed_test.png 
