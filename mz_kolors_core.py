@@ -13,7 +13,8 @@ import torch
 import folder_paths
 import comfy.model_management as mm
 import comfy.model_management as model_management
-from .hook_comfyui_kolors_v2 import get_torch_device
+from .hook_comfyui_kolors_v2 import get_torch_device, get_torch_dtype
+import torch.amp
 
 
 def chatglm3_text_encode(chatglm3_model, prompt):
@@ -274,7 +275,7 @@ def MZ_KolorsControlNetPatch_call(kwargs):
         super_forward = ControlNet.forward
 
         def KolorsControlNet_forward(self, x, hint, timesteps, context, **kwargs):
-            with torch.amp.autocast(enabled=True, device_type=get_torch_device()):
+            with torch.amp.autocast(enabled=True, device_type=get_torch_device(), dtype=get_torch_dtype()):
                 context = self.encoder_hid_proj(context)
                 return super_forward(self, x, hint, timesteps, context, **kwargs)
 
@@ -322,7 +323,7 @@ def MZ_KolorsControlNetPatch_call(kwargs):
         super_forward = ControlNet.forward
 
         def KolorsControlNet_forward(self, x, hint, timesteps, context, **kwargs):
-            with torch.amp.autocast(enabled=True, device_type=get_torch_device()):
+            with torch.amp.autocast(enabled=True, device_type=get_torch_device(), dtype=get_torch_dtype()):
                 context = self.encoder_hid_proj(context)
                 return super_forward(self, x, hint, timesteps, context, **kwargs)
 

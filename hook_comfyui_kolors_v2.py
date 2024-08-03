@@ -65,18 +65,21 @@ def get_torch_device():
         else:
             return "cuda"
  
+def get_torch_dtype():
+    dtype = model_management.unet_dtype()
+    if dtype not in [torch.float32, torch.float16, torch.bfloat16]:
+        dtype = torch.float16 if model_management.should_use_fp16() else torch.float32
+
+    return dtype
+
 class KolorsUNetModel(UNetModel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.encoder_hid_proj = nn.Linear(
             4096, 2048, bias=True)
 
-    def forward(self, *args, **kwargs):
-        dtype = model_management.unet_dtype()
-        if dtype not in [torch.float32, torch.float16, torch.bfloat16]:
-            dtype = torch.float16 if model_management.should_use_fp16() else torch.float32
-
-        with torch.amp.autocast(enabled=True, device_type=get_torch_device()):
+    def forward(self, *args, **kwargs): 
+        with torch.amp.autocast(enabled=True, device_type=get_torch_device(), dtype=get_torch_dtype()):
             if "context" in kwargs:
                 kwargs["context"] = self.encoder_hid_proj(
                     kwargs["context"]) 
@@ -276,7 +279,7 @@ class KolorsControlNet(ControlNet):
             4096, 2048, bias=True)
 
     def forward(self, *args, **kwargs):
-        with torch.amp.autocast(enabled=True, device_type=get_torch_device()):
+        with torch.amp.autocast(enabled=True, device_type=get_torch_device(), dtype=get_torch_dtype()):
             if "context" in kwargs:
                 kwargs["context"] = self.encoder_hid_proj(
                     kwargs["context"])
