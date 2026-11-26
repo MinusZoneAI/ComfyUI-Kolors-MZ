@@ -9,6 +9,7 @@ import subprocess
 import sys
 from types import MethodType
 
+import numpy as np
 import torch
 import folder_paths
 import comfy.model_management as mm
